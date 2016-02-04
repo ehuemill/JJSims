@@ -28,15 +28,15 @@ x(1,:)=(1:xmax);
 %Flux Loop Parameters
 f=1;
 fmax=201;
-FluxinJuncMin=-3;
-FluxinJuncMax=3;
+FluxinJuncMin=-6;
+FluxinJuncMax=6;
 
 
 %Phase Loop parameters
 p=1;
 pmax=101;
 Phase1Min=0*pi;
-Phase1Max=2*pi;
+Phase1Max=4*pi;
 
 
 %Pre Allocating memory to the arrays to decrease runtime
