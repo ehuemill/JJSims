@@ -28,8 +28,8 @@ x(1,:)=(1:xmax);
 %Flux Loop Parameters
 f=1;
 fmax=201;
-FluxinJuncMin=-4;
-FluxinJuncMax=4;
+FluxinJuncMin=-3;
+FluxinJuncMax=3;
 
 
 %Phase Loop parameters
@@ -44,7 +44,7 @@ Phase1=zeros(1,pmax);
 FluxinJunc=zeros(1,fmax);
 
 SCurrentDensityNoise=(2*rand(1,xmax)-1);
-SCurrentDensity=ones(1,xmax)+0.01*SCurrentDensityNoise;
+SCurrentDensity=ones(1,xmax)+0.5*SCurrentDensityNoise;
 
 
 SCurrent=zeros(xmax,pmax,fmax);
