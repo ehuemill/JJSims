@@ -22,21 +22,21 @@ clear;
 clc;
 close all;
 %% Defining the Parameters of the Simulaiton
-xmax=301;
+xmax=101;
 x(1,:)=(1:xmax);
 
 %Flux Loop Parameters
 f=1;
 fmax=201;
-FluxinJuncMin=-6;
-FluxinJuncMax=6;
+FluxinJuncMin=-4;
+FluxinJuncMax=4;
 
 
 %Phase Loop parameters
 p=1;
 pmax=101;
 Phase1Min=0*pi;
-Phase1Max=4*pi;
+Phase1Max=2*pi;
 
 
 %Pre Allocating memory to the arrays to decrease runtime
