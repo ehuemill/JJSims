@@ -22,21 +22,21 @@ clear;
 clc;
 close all;
 %% Defining the Parameters of the Simulaiton
-xmax=301;
+xmax=101;
 x(1,:)=(1:xmax);
 
 %Flux Loop Parameters
 f=1;
 fmax=201;
-FluxinJuncMin=-6;
-FluxinJuncMax=6;
+FluxinJuncMin=-4;
+FluxinJuncMax=4;
 
 
 %Phase Loop parameters
 p=1;
 pmax=101;
 Phase1Min=0*pi;
-Phase1Max=4*pi;
+Phase1Max=2*pi;
 
 
 %Pre Allocating memory to the arrays to decrease runtime
@@ -44,7 +44,7 @@ Phase1=zeros(1,pmax);
 FluxinJunc=zeros(1,fmax);
 
 SCurrentDensityNoise=(2*rand(1,xmax)-1);
-SCurrentDensity=ones(1,xmax)+0.01*SCurrentDensityNoise;
+SCurrentDensity=ones(1,xmax)+1*SCurrentDensityNoise;
 
 
 SCurrent=zeros(xmax,pmax,fmax);
@@ -65,14 +65,14 @@ for f=1:fmax
 
     %Phase1 Loop of externally set phase in 
     %Define the loop setp size, then run the for loop
-    Phase1SSS=(Phase1Max-Phase1Min)/(pmax-1);
+    Phase1SS=(Phase1Max-Phase1Min)/(pmax-1);
     for p=1:pmax
 
-        Phase1(p)=Phase1Min+(p-1)*Phase1SSS;
-
+        Phase1(p)=Phase1Min+(p-1)*Phase1SS;
+        
         SCurrent=SCurrentDensity.*sin(PhaseF+Phase1(p));
         SCurrentNet(p)=sum(SCurrent)/xmax;
-
+      
 
     end
 
