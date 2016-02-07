@@ -29,9 +29,9 @@ x(1,:)=(1:xmax);
 
 %geometrical Phase Loop Parameters
 g=1;
-gmax=5;
+gmax=100;
 PhaseGMin=0;
-PhaseGMax=pi;
+PhaseGMax=0;
 
 
 
@@ -57,8 +57,7 @@ PhaseGShift=zeros(1,gmax);
 FluxinJunc=zeros(1,fmax);
 
 
-SCurrentDensityNoise=(2*rand(1,xmax)-1);
-SCurrentDensity=ones(1,xmax)+0.1*SCurrentDensityNoise;
+
 
 
 SCurrent=zeros(xmax,pmax,fmax);
@@ -78,10 +77,10 @@ for g=1:gmax
     %Defining the geometrical(intrinsic) phase shift in the junction
     PhaseG(1,1:round(xmax/2))=0;
     PhaseG(1,1:xmax-round(xmax/2))=PhaseGShift(g);
-
-
     
-  
+    SCurrentDensityNoise=(2*rand(1,xmax)-1);
+    SCurrentDensity=ones(1,xmax)+0.1*SCurrentDensityNoise;
+
     %Field Contribution to the Phase 
     %Define the loop setp size, then run the for loop
     FluxinJuncSS=(FluxinJuncMax-FluxinJuncMin)/(fmax-1);
@@ -112,7 +111,7 @@ end
 figure
 plot(FluxinJunc,MaxSCurrentNet(:,:))
 xlabel('Flux Quanta in Junction');ylabel('Net Supercurrent');
-title('Fraunhofer Pattern for different Phase Shifts');
+title('Fraunhofer Pattern for Disorder');
 
 
 
