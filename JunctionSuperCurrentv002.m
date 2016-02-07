@@ -37,9 +37,10 @@ PhaseGMax=0;
 
 %Flux Loop Parameters
 f=1;
-fmax=601;
 FluxinJuncMin=-6;
 FluxinJuncMax=6;
+fmax=(FluxinJuncMax-FluxinJuncMin)*50+1;
+
 
 
 %Phase Loop parameters
@@ -79,7 +80,7 @@ for g=1:gmax
     PhaseG(1,1:xmax-round(xmax/2))=PhaseGShift(g);
     
     SCurrentDensityNoise=(2*rand(1,xmax)-1);
-    SCurrentDensity=zeros(1,xmax)+1*exp(5*SCurrentDensityNoise);
+    SCurrentDensity=zeros(1,xmax)+1*exp(2*(SCurrentDensityNoise));
 
     %Field Contribution to the Phase 
     %Define the loop setp size, then run the for loop
