@@ -29,7 +29,7 @@ x(1,:)=(1:xmax);
 
 %geometrical Phase Loop Parameters
 g=1;
-gmax=100;
+gmax=10;
 PhaseGMin=0;
 PhaseGMax=0;
 
@@ -37,9 +37,9 @@ PhaseGMax=0;
 
 %Flux Loop Parameters
 f=1;
-fmax=301;
-FluxinJuncMin=-3;
-FluxinJuncMax=3;
+fmax=601;
+FluxinJuncMin=-6;
+FluxinJuncMax=6;
 
 
 %Phase Loop parameters
@@ -79,7 +79,7 @@ for g=1:gmax
     PhaseG(1,1:xmax-round(xmax/2))=PhaseGShift(g);
     
     SCurrentDensityNoise=(2*rand(1,xmax)-1);
-    SCurrentDensity=ones(1,xmax)+0.1*SCurrentDensityNoise;
+    SCurrentDensity=zeros(1,xmax)+1*exp(5*SCurrentDensityNoise);
 
     %Field Contribution to the Phase 
     %Define the loop setp size, then run the for loop
@@ -112,8 +112,10 @@ figure
 plot(FluxinJunc,MaxSCurrentNet(:,:))
 xlabel('Flux Quanta in Junction');ylabel('Net Supercurrent');
 title('Fraunhofer Pattern for Disorder');
-
-
+figure
+plot(x/xmax,SCurrentDensity)
+xlabel('Distance Along Junction');ylabel('Local Supercurrent');
+title('Super Current Density Distribution with Disorder');
 
 
 
