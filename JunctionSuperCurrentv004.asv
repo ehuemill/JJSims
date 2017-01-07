@@ -148,8 +148,8 @@ for j=1:jmax;
             PhaseDrop1=Phase0(p)+PhaseFDen1;
             PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
 
-            SCurrent1=SCurDen1.*((1-Alpha)*sin(PhaseDrop1)+(02)*Jam*sin(PhaseDrop1*2));
-            SCurrent2=SCurDen2.*((1+Alpha)*sin(PhaseDrop2));
+            SCurrent1=SCurDen1.*((1-Alpha)*sin(PhaseDrop1)+(.2)*Jam*sin(PhaseDrop1*2));
+            SCurrent2=SCurDen2.*(sin(PhaseDrop2));
 
             SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
 
