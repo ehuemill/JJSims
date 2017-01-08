@@ -43,8 +43,8 @@ close all;
 %% Defining the Parameters of the Simulaiton
 
 %Setting Junction 1 Parameters
-    xmax1=201;
-    xmax2=202;
+    xmax1=101;
+    xmax2=102;
     x1(1,:)=(1:xmax1);
     x2(1,:)=(1:xmax2);
 
@@ -69,20 +69,20 @@ LoopArea=LoopWid*LoopLen;
 
 %Field Parameters
 f=1;
-fmax=506;
-FieldMin=-.1;
-FieldMax=.1;
+fmax=1006;
+FieldMin=0;
+FieldMax=.2;
 
 
 %Stepping through a parameter to test
 j=1;
 jmax=5;
 AlphaMin=0;
-AlphaMax=.2;
+AlphaMax=1;
 
 %Phase Loop parameters
 p=1;
-pmax=403;
+pmax=203;
 Phase0Min=0*pi;
 Phase0Max=2*pi;
 
@@ -154,7 +154,7 @@ for j=1:jmax;
             PhaseDrop1=ones(xmax1,1)*Phase0+transpose(PhaseFDen1)*ones(1,pmax);
             PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+transpose(PhaseFDen2)*ones(1,pmax);
         
-        %Calculating the SC 
+        %Calculating the Super Current 
             SCurrent1=SCurDen1.*(1-Alpha).*sin(PhaseDrop1);
             SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2);
         
@@ -175,11 +175,11 @@ end
 
 
 hold on; subplot(2,1,1); plot(Field,MaxSCurrentNet,'.')
-hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
+%hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
 xlabel('Magnetic Field'); ylabel('Critical Current');
 
 
 hold on; subplot(2,1,2); plot(Field,Phase0MaxSC/pi,'.')
-hold on; subplot(2,1,2); plot(Field,Phase0MinSC/pi,'.')
+%hold on; subplot(2,1,2); plot(Field,Phase0MinSC/pi,'.')
 xlabel('Magnetic Field'); ylabel('Phase 0/pi');
 
