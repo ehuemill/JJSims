@@ -59,6 +59,7 @@ close all;
     JuncWid2=.5;
     JuncLen2=.5;
 
+
 JuncArea1=JuncWid1*JuncLen1;
 JuncArea2=JuncWid2*JuncLen2;
 
@@ -139,18 +140,16 @@ for j=1:jmax;
 
         %Phase0 ForLoop of externally set phase 
         %Define the Phase0 setp size, then run the ForLoop
-            Phase0SS=(Phase0Max-Phase0Min)/(pmax-1);
-            Phase0=(Phase0Min:Phase0SS:Phase0Max);
-            PhaseNorm=Phase0/(2*pi);
-            PhaseDrop1=ones(xmax1,1)*Phase0+transpose(PhaseFDen1)*ones(1,pmax);
-            PhaseDrop2=ones(xmax2,1)*Phase0;
-        parfor p=1:pmax
 
-            
+        Phase0SS=(Phase0Max-Phase0Min)/(pmax-1);
+        for p=1:pmax
+
+            Phase0(p)=Phase0Min+(p-1)*Phase0SS;
+
             PhaseDrop1=Phase0(p)+PhaseFDen1;
             PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
 
-            SCurrent1=SCurDen1.*(1-Alpha).*(.6*sin(PhaseDrop1)-.4*sin(PhaseDrop1*2));
+            SCurrent1=SCurDen1.*(1-Alpha).*(.6*sin(PhaseDrop1)+.4*sin(PhaseDrop1*2));
             SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2);
 
             SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
