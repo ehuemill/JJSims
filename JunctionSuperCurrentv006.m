@@ -44,57 +44,56 @@ close all;
 
 %Setting Junction 1 Parameters
     xmax1=101;
-    xmax2=101;
+    xmax2=102;
     x1(1,:)=(1:xmax1);
     x2(1,:)=(1:xmax2);
 
 %Critical Current Magnitudes
-    JuncSCMag1=.5;
-    JuncSCMag2=.5;
+    JuncSCMag1=1;
+    JuncSCMag2=1;
 
 %Junction Area Determinination
-    JuncWid1=.5;
-    JuncLen1=.5;
+    JuncWid1=1;
+    JuncLen1=1;
 
-    JuncWid2=.5;
-    JuncLen2=.5;
-
+    JuncWid2=1;
+    JuncLen2=1;
 
 JuncArea1=JuncWid1*JuncLen1;
 JuncArea2=JuncWid2*JuncLen2;
 
-
 %Setting Squid Loop Parameers
-LoopWid=1;
+LoopWid=10;
 LoopLen=1;
 LoopArea=LoopWid*LoopLen;
+
+%Field Parameters
+f=1;
+fmax=1006;
+FieldMin=0;
+FieldMax=.2;
+
+
+%Stepping through a parameter to test
+j=1;
+jmax=5;
+AlphaMin=0;
+AlphaMax=1;
+
+%Phase Loop parameters
+p=1;
+pmax=203;
+Phase0Min=0*pi;
+Phase0Max=2*pi;
+
 
 %Current Noise Parameters
     SCurNoise1=(2*rand(1,xmax1)-1);
     SCurNoise2=(2*rand(1,xmax2)-1);
 
 %Calculating Critical Current Densities
-    SCurDen1=JuncSCMag1*ones(1,xmax1)/xmax1+.01*SCurNoise1/xmax1;
-    SCurDen2=JuncSCMag2*ones(1,xmax2)/xmax2+.01*SCurNoise2/xmax2;
-
-%Stepping through a parameter to test
-j=1;
-jmax=11;
-AlphaMin=0;
-AlphaMax=1;
-
-%Field Parameters
-f=1;
-fmax=1001;
-FieldMin=-10;
-FieldMax=10;
-
-
-%Phase Loop parameters
-p=1;
-pmax=201;
-Phase0Min=0*pi;
-Phase0Max=4*pi;
+    SCurDen1=transpose(ones(pmax,1)*(JuncSCMag1*ones(1,xmax1)/xmax1+.1*SCurNoise1/xmax1));
+    SCurDen2=transpose(ones(pmax,1)*(JuncSCMag2*ones(1,xmax2)/xmax2+.1*SCurNoise2/xmax2));
 
 
 %Pre Allocating memory to the arrays (should decrease runtime)
@@ -114,14 +113,21 @@ SCurrentNet=zeros(1,pmax);
 
 MaxSCurrentNet=zeros(jmax,fmax);
 MinSCurrentNet=zeros(jmax,fmax);
+IndexMaxSC=zeros(jmax,fmax);
+IndexMinSC=zeros(jmax,fmax);
+Phase0MaxSC=zeros(jmax,fmax);
+Phase0MinSC=zeros(jmax,fmax);
+
 %% Loops for running the simulation Meat of the Simulation
 
 
 %Changing a Parameter of the plot
 AlphaSS =(AlphaMax-AlphaMin)/(jmax-1);
+AlphaV= AlphaMin:AlphaSS:AlphaMax;
+
 for j=1:jmax;
     
-    Alpha=AlphaMin+(j-1)*AlphaSS
+    Alpha=AlphaV(j);
  
     %Field Contribution to the Phase 
     %Define the Field ForLoop setp size, then run the Field for ForLoop
@@ -140,41 +146,40 @@ for j=1:jmax;
 
         %Phase0 ForLoop of externally set phase 
         %Define the Phase0 setp size, then run the ForLoop
-
-        Phase0SS=(Phase0Max-Phase0Min)/(pmax-1);
-        for p=1:pmax
-
-            Phase0(p)=Phase0Min+(p-1)*Phase0SS;
-
-            PhaseDrop1=Phase0(p)+PhaseFDen1;
-            PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
-
-            SCurrent1=SCurDen1.*(1-Alpha).*(.6*sin(PhaseDrop1)+.4*sin(PhaseDrop1*2));
+            Phase0SS=(Phase0Max-Phase0Min)/(pmax-1);
+            Phase0=(Phase0Min:Phase0SS:Phase0Max);
+            PhaseNorm=Phase0/(2*pi);
+        
+       %Calculating the local Phase Drop across each junction
+            PhaseDrop1=ones(xmax1,1)*Phase0+transpose(PhaseFDen1)*ones(1,pmax);
+            PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+transpose(PhaseFDen2)*ones(1,pmax);
+        
+        %Calculating the Super Current 
+            SCurrent1=SCurDen1.*(1-Alpha).*sin(PhaseDrop1);
             SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2);
+        
+            SCurrentNet=sum(SCurrent1)+sum(SCurrent2);
+        
+        [MaxSCurrentNet(j,f),IndexMaxSC(j,f)]=max(SCurrentNet);  
+        [MinSCurrentNet(j,f),IndexMinSC(j,f)]=min(SCurrentNet);
 
-            SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
-
-
-        end
-        MaxSCurrentNet(j,f)=max(SCurrentNet);
-        MinSCurrentNet(j,f)=min(SCurrentNet);
+        Phase0MaxSC(j,f)=Phase0(IndexMaxSC(j,f));
+        Phase0MinSC(j,f)=Phase0(IndexMinSC(j,f));
+        
+ 
+        
     end
 
 end
 
-hold on
-plot(Field,MaxSCurrentNet,'.')
+
+
+hold on; subplot(2,1,1); plot(Field,MaxSCurrentNet,'.')
+%hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
 xlabel('Magnetic Field'); ylabel('Critical Current');
 
 
-% hold on 
-% plot(Field,MinSCurrentNet,'.')
-
-
-
-
-    
-
-
-
+hold on; subplot(2,1,2); plot(Field,Phase0MaxSC/pi,'.')
+%hold on; subplot(2,1,2); plot(Field,Phase0MinSC/pi,'.')
+xlabel('Magnetic Field'); ylabel('Phase 0/pi');
 
