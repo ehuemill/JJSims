@@ -49,11 +49,11 @@ close all;
     x2(1,:)=(1:xmax2);
 
 %Critical Current Magnitudes
-    JuncSCMag1=1;
+    JuncSCMag1=.1;
     JuncSCMag2=1;
 
 %Junction Area Determinination
-    JuncWid1=1;
+    JuncWid1=.5;
     JuncLen1=1;
 
     JuncWid2=1;
@@ -64,19 +64,19 @@ JuncArea2=JuncWid2*JuncLen2;
 
 %Setting Squid Loop Parameers
 LoopWid=10;
-LoopLen=1;
+LoopLen=30;
 LoopArea=LoopWid*LoopLen;
 
 %Field Parameters
 f=1;
-fmax=1006;
-FieldMin=0;
-FieldMax=.2;
+fmax=2006;
+FieldMin=-.3;
+FieldMax=.3;
 
 
 %Stepping through a parameter to test
 j=1;
-jmax=5;
+jmax=2;
 AlphaMin=0;
 AlphaMax=1;
 
@@ -103,9 +103,11 @@ FluxinJunc1=zeros(1,fmax);
 FluxinJunc2=zeros(1,fmax);
 FluxinLoop=zeros(1,fmax);
 
-PhaseFDen1=zeros(1,fmax);
-PhaseFDen2=zeros(1,fmax);
-PhaseFL=zeros(1,fmax);
+PhaseFDen1=zeros(1,fmax); %Phase from field in Junction 1
+PhaseFDen2=zeros(1,fmax); %Phase from field in Junction 2
+PhaseFL=zeros(1,fmax); %Phase from field in the Squid Loop
+PhaseIntrinsic1=zeros(xmax1,pmax); %For Un  wave SC
+PhaseIntrinsic2=zeros(xmax2,pmax);
 
 SCurrent1=zeros(xmax1,pmax,fmax);
 SCurrent2=zeros(xmax2,pmax,fmax);
@@ -149,17 +151,17 @@ for j=1:jmax;
             Phase0SS=(Phase0Max-Phase0Min)/(pmax-1);
             Phase0=(Phase0Min:Phase0SS:Phase0Max);
             PhaseNorm=Phase0/(2*pi);
-        
+            PhaseIntrinsic1=zeros(xmax1,pmax);
        %Calculating the local Phase Drop across each junction
             PhaseDrop1=ones(xmax1,1)*Phase0+transpose(PhaseFDen1)*ones(1,pmax);
             PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+transpose(PhaseFDen2)*ones(1,pmax);
-        
+            PhaseIntrinsic2(round(xmax2/2):end,:)=pi;
         %Calculating the Super Current 
-            SCurrent1=SCurDen1.*(1-Alpha).*sin(PhaseDrop1);
-            SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2+pi);
-        
+            SCurrent1=SCurDen1.*(1).*(sin(PhaseDrop1)+sin(PhaseDrop1*2));
+            SCurrent2=SCurDen2.*(1).*sin(PhaseDrop2+Alpha*PhaseIntrinsic2);
+            
             SCurrentNet=sum(SCurrent1)+sum(SCurrent2);
-        
+            
         [MaxSCurrentNet(j,f),IndexMaxSC(j,f)]=max(SCurrentNet);  
         [MinSCurrentNet(j,f),IndexMinSC(j,f)]=min(SCurrentNet);
 
@@ -174,7 +176,7 @@ end
 
 
 
-hold on; subplot(2,1,1); plot(Field,MaxSCurrentNet,'.')
+hold on; subplot(2,1,1); plot(Field,MaxSCurrentNet)
 %hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
 xlabel('Magnetic Field'); ylabel('Critical Current');
 
