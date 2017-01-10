@@ -156,7 +156,7 @@ for j=1:jmax;
         
         %Calculating the Super Current 
             SCurrent1=SCurDen1.*(1-Alpha).*sin(PhaseDrop1);
-            SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2);
+            SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2+pi);
         
             SCurrentNet=sum(SCurrent1)+sum(SCurrent2);
         
