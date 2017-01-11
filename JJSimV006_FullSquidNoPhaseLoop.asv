@@ -44,19 +44,19 @@ close all;
 
 %Setting Junction 1 Parameters
     xmax1=11;
-    xmax2=51;
-    x1(:,1)=(1:xmax1);
-    x2(:,1)=(1:xmax2);
+    xmax2=102;
+    x1(1,:)=(1:xmax1);
+    x2(1,:)=(1:xmax2);
 
 %Critical Current Magnitudes
-    JuncSCMag1=1;
+    JuncSCMag1=.2;
     JuncSCMag2=1;
 
 %Junction Area Determinination
     JuncWid1=.5;
     JuncLen1=1;
 
-    JuncWid2=.5;
+    JuncWid2=1;
     JuncLen2=1;
 
 JuncArea1=JuncWid1*JuncLen1;
@@ -69,7 +69,7 @@ LoopArea=LoopWid*LoopLen;
 
 %Field Parameters
 f=1;
-fmax=200006;
+fmax=55006;
 FieldMin=-5;
 FieldMax=5;
 
@@ -133,10 +133,9 @@ for j=1:jmax;
     %Field Contribution to the Phase 
     %Define the Field ForLoop setp size, then run the Field for ForLoop
     FieldSS=(FieldMax-FieldMin)/(fmax-1);
-    for f=1:fmax
+    parfor f=1:fmax
 
-        disp(f);
-        disp(j);
+                
         Field(f)=FieldMin+(f-1)*FieldSS;
 
 
@@ -179,11 +178,11 @@ end
 
 
 hold on; subplot(2,1,1); plot(Field,MaxSCurrentNet,'.')
-hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
+%hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
 xlabel('Magnetic Field'); ylabel('Critical Current');
 
 
 hold on; subplot(2,1,2); plot(Field,Phase0MaxSC/pi,'.')
-hold on; subplot(2,1,2); plot(Field,Phase0MinSC/pi,'.')
+%hold on; subplot(2,1,2); plot(Field,Phase0MinSC/pi,'.')
 xlabel('Magnetic Field'); ylabel('Phase 0/pi');
 
