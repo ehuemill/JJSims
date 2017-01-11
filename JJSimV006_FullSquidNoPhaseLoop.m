@@ -69,7 +69,7 @@ LoopArea=LoopWid*LoopLen;
 
 %Field Parameters
 f=1;
-fmax=200006;
+fmax=1006;
 FieldMin=-5;
 FieldMax=5;
 
