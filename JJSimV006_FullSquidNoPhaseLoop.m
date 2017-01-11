@@ -43,14 +43,14 @@ close all;
 %% Defining the Parameters of the Simulaiton
 
 %Setting Junction 1 Parameters
-    xmax1=11;
-    xmax2=51;
+    xmax1=31;
+    xmax2=52;
     x1(:,1)=(1:xmax1);
     x2(:,1)=(1:xmax2);
 
 %Critical Current Magnitudes
-    JuncSCMag1=1;
-    JuncSCMag2=1;
+    JuncSCMag1=.5;
+    JuncSCMag2=.5;
 
 %Junction Area Determinination
     JuncWid1=.5;
@@ -63,27 +63,27 @@ JuncArea1=JuncWid1*JuncLen1;
 JuncArea2=JuncWid2*JuncLen2;
 
 %Setting Squid Loop Parameers
-LoopWid=10;
+LoopWid=1;
 LoopLen=10;
 LoopArea=LoopWid*LoopLen;
 
 %Field Parameters
 f=1;
-fmax=200006;
-FieldMin=-5;
-FieldMax=5;
+fmax=1003;
+FieldMin=-.3;
+FieldMax=.3;
 
 
 %Stepping through a parameter to test
 j=1;
-jmax=11;
+jmax=3;
 AlphaMin=0;
-AlphaMax=1;
+AlphaMax=.8;
 
 %Phase Loop parameters
 p=1;
-pmax=103;
-Phase0Min=0*pi;
+pmax=104;
+Phase0Min=-2*pi;
 Phase0Max=2*pi;
 
 
@@ -135,8 +135,6 @@ for j=1:jmax;
     FieldSS=(FieldMax-FieldMin)/(fmax-1);
     for f=1:fmax
 
-        disp(f);
-        disp(j);
         Field(f)=FieldMin+(f-1)*FieldSS;
 
 
@@ -152,15 +150,14 @@ for j=1:jmax;
             Phase0SS=(Phase0Max-Phase0Min)/(pmax-1);
             Phase0=(Phase0Min:Phase0SS:Phase0Max);
             PhaseNorm=Phase0/(2*pi);
-            PhaseIntrinsic1=zeros(xmax1,pmax);
-            PhaseIntrinsic2=zeros(xmax2,pmax);
+            
        %Calculating the local Phase Drop across each junction
-            PhaseDrop1=ones(xmax1,1)*Phase0+transpose(PhaseFDen1)*ones(1,pmax);
-            PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+transpose(PhaseFDen2)*ones(1,pmax);
-            PhaseIntrinsic2(round(xmax2/2):end,:)=pi;
+            PhaseDrop1=ones(xmax1,1)*Phase0+PhaseFDen1*ones(1,pmax);
+            PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+PhaseFDen2*ones(1,pmax);
+            
         %Calculating the Super Current 
-            SCurrent1=SCurDen1.*(1-Alpha).*(sin(PhaseDrop1)+sin(PhaseDrop1*2));
-            SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2+PhaseIntrinsic2);
+            SCurrent1=SCurDen1.*(1-Alpha).*(sin(PhaseDrop1)+sin(PhaseDrop1/2));
+            SCurrent2=SCurDen2.*(1+Alpha).*(sin(PhaseDrop2)+sin(PhaseDrop2/2));
             
             SCurrentNet=sum(SCurrent1)+sum(SCurrent2);
             
@@ -179,11 +176,11 @@ end
 
 
 hold on; subplot(2,1,1); plot(Field,MaxSCurrentNet,'.')
-hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
+% hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
 xlabel('Magnetic Field'); ylabel('Critical Current');
 
 
 hold on; subplot(2,1,2); plot(Field,Phase0MaxSC/pi,'.')
-hold on; subplot(2,1,2); plot(Field,Phase0MinSC/pi,'.')
+% hold on; subplot(2,1,2); plot(Field,Phase0MinSC/pi,'.')
 xlabel('Magnetic Field'); ylabel('Phase 0/pi');
 
