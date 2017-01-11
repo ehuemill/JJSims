@@ -70,8 +70,8 @@ LoopArea=LoopWid*LoopLen;
 %Field Parameters
 f=1;
 fmax=1003;
-FieldMin=-.3;
-FieldMax=.3;
+FieldMin=-3;
+FieldMax=3;
 
 
 %Stepping through a parameter to test
@@ -82,7 +82,7 @@ AlphaMax=.8;
 
 %Phase Loop parameters
 p=1;
-pmax=104;
+pmax=204;
 Phase0Min=-2*pi;
 Phase0Max=2*pi;
 

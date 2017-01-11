@@ -28,14 +28,14 @@ FluxinJuncMin=-3;
 FluxinJuncMax=3;
 
 SCurrentMag =1;
-SCurrentNoiseMag =.5;
+SCurrentNoiseMag =.9;
 
 
 %Phase Loop parameters
 p=1;
 pmax=101;
-Phase1Min=-0*pi;
-Phase1Max=2.0*pi;
+Phase1Min=-.5*pi;
+Phase1Max=1.5*pi;
 
 
 %Pre Allocating memory to the arrays to decrease runtime
@@ -78,18 +78,26 @@ for f=1:fmax
      
     [MaxSCurrentNet(f),IndexMax(f)]=max(SCurrentNet);
     Phase1MaxSC(f)=Phase1(IndexMax(f));
+    [MinSCurrentNet(f),IndexMin(f)]=min(SCurrentNet);
+    Phase1MinSC(f)=Phase1(IndexMin(f));
         
 end
 
 figure
+hold on
 subplot(2,1,1); plot(FluxinJunc,MaxSCurrentNet,'.')
 ylabel('Critical Current');
-
+hold on
 subplot(2,1,2); plot(FluxinJunc,Phase1MaxSC/pi,'.')
 xlabel('Flux');ylabel('Phase1 of Ic/pi');
 
 
-
+hold on
+subplot(2,1,1); plot(FluxinJunc,MinSCurrentNet,'.')
+ylabel('Critical Current');
+hold on
+subplot(2,1,2); plot(FluxinJunc,Phase1MinSC/pi,'.')
+xlabel('Flux');ylabel('Phase1 of Ic/pi');
 
     
 
