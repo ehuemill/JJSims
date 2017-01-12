@@ -53,8 +53,8 @@ close all;
         SCurrentMag1=1;
         SCurrentMag2=1;
 
-        SCurNoiseMag1=.1;
-        SCurNoiseMag2=.1;
+        SCurNoiseMag1=.01;
+        SCurNoiseMag2=.01;
         
     %Setting Squid Loop Parameers
         LoopWid=1;
@@ -80,13 +80,6 @@ close all;
         FieldMin=-2;
         FieldMax=2;
         
-    %Stepping through a parameter
-        j=1;
-        jmax=2;
-        AlphaMin=0;
-        AlphaMax=.8;
-
-
 %Calculating Critical Current Densities
     JuncArea1=JuncWid1*JuncLen1;
     JuncArea2=JuncWid2*JuncLen2;
@@ -113,17 +106,11 @@ close all;
     SCurrent2=zeros(xmax2,pmax,fmax);
     SCurrentNet=zeros(1,pmax);
 
-    MaxSCurrentNet=zeros(2,fmax);
-    MinSCurrentNet=zeros(2,fmax);
+    MaxSCurrentNet=zeros(1,fmax);
+    MinSCurrentNet=zeros(1,fmax);
 %% Loops for running the simulation Meat of the Simulation
 
 
-%Changing a Parameter of the plot
-AlphaSS =(AlphaMax-AlphaMin)/(jmax-1);
-for j=1:jmax;
-    
-    Alpha=AlphaMin+(j-1)*AlphaSS;
- 
     %Field Contribution to the Phase 
     %Define the Field ForLoop setp size, then run the Field for ForLoop
     FieldSS=(FieldMax-FieldMin)/(fmax-1);
@@ -149,18 +136,18 @@ for j=1:jmax;
             PhaseDrop1=Phase0(p)+PhaseFDen1;
             PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
 
-            SCurrent1=SCurDen1.*(1-Alpha).*sin(PhaseDrop1);
-            SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2);
+            SCurrent1=SCurDen1.*sin(PhaseDrop1);
+            SCurrent2=SCurDen2.*sin(PhaseDrop2);
 
             SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
 
 
         end
-        MaxSCurrentNet(j,f)=max(SCurrentNet);
-        MinSCurrentNet(j,f)=min(SCurrentNet);
+        MaxSCurrentNet(f)=max(SCurrentNet);
+        MinSCurrentNet(f)=min(SCurrentNet);
     end
 
-end
+
 
 hold on
 plot(Field,MaxSCurrentNet,'.')
