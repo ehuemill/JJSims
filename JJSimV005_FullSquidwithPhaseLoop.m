@@ -43,21 +43,21 @@ close all;
 %% Defining the Parameters of the Simulaiton
 
 %Setting Junction 1 Parameters
-    xmax1=101;
-    xmax2=101;
+    xmax1=31;
+    xmax2=51;
     x1(1,:)=(1:xmax1);
     x2(1,:)=(1:xmax2);
 
 %Critical Current Magnitudes
-    JuncSCMag1=.5;
-    JuncSCMag2=.5;
+    JuncSCMag1=1;
+    JuncSCMag2=1;
 
 %Junction Area Determinination
-    JuncWid1=.5;
-    JuncLen1=.5;
+    JuncWid1=1;
+    JuncLen1=1;
 
-    JuncWid2=.5;
-    JuncLen2=.5;
+    JuncWid2=1;
+    JuncLen2=1;
 
 
 JuncArea1=JuncWid1*JuncLen1;
@@ -65,8 +65,8 @@ JuncArea2=JuncWid2*JuncLen2;
 
 
 %Setting Squid Loop Parameers
-LoopWid=1;
-LoopLen=1;
+LoopWid=2;
+LoopLen=5;
 LoopArea=LoopWid*LoopLen;
 
 %Current Noise Parameters
@@ -79,23 +79,22 @@ LoopArea=LoopWid*LoopLen;
 
 %Stepping through a parameter to test
 j=1;
-jmax=11;
+jmax=2;
 AlphaMin=0;
-AlphaMax=1;
+AlphaMax=.8;
 
 %Field Parameters
 f=1;
-fmax=1001;
-FieldMin=-10;
-FieldMax=10;
+fmax=1003;
+FieldMin=-.2;
+FieldMax=.2;
 
 
 %Phase Loop parameters
 p=1;
-pmax=201;
+pmax=101;
 Phase0Min=0*pi;
-Phase0Max=4*pi;
-
+Phase0Max=2*pi;
 
 %Pre Allocating memory to the arrays (should decrease runtime)
 Phase0=zeros(1,pmax);
@@ -121,7 +120,7 @@ MinSCurrentNet=zeros(jmax,fmax);
 AlphaSS =(AlphaMax-AlphaMin)/(jmax-1);
 for j=1:jmax;
     
-    Alpha=AlphaMin+(j-1)*AlphaSS
+    Alpha=AlphaMin+(j-1)*AlphaSS;
  
     %Field Contribution to the Phase 
     %Define the Field ForLoop setp size, then run the Field for ForLoop

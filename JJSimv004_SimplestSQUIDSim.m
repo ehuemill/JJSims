@@ -43,20 +43,20 @@ close all;
 %% Defining the Parameters of the Simulaiton
 
 %Setting Junction 1 Parameters
-    xmax1=201;
-    xmax2=201;
+    xmax1=51;
+    xmax2=51;
     x1(1,:)=(1:xmax1);
     x2(1,:)=(1:xmax2);
 
 %Critical Current Magnitudes
-    JuncSCMag1=2.5;
-    JuncSCMag2=5;
+    JuncSCMag1=1;
+    JuncSCMag2=1;
 
 %Junction Area Determinination
-    JuncWid1=.5;
+    JuncWid1=1;
     JuncLen1=1;
 
-    JuncWid2=2;
+    JuncWid2=1;
     JuncLen2=1;
 
 JuncArea1=JuncWid1*JuncLen1;
@@ -73,28 +73,28 @@ JuncArea2=JuncWid2*JuncLen2;
 
 %Setting Squid Loop Parameers
 LoopWid=2;
-LoopLen=4;
+LoopLen=5;
 LoopArea=LoopWid*LoopLen;
 
 %Stepping through a parameter
 
 j=1;
-jmax=6;
+jmax=2;
 AlphaMin=0;
-AlphaMax=1;
+AlphaMax=.8;
 
 %Field Parameters
 f=1;
-fmax=2001;
-FieldMin=-1;
-FieldMax=1;
+fmax=1001;
+FieldMin=-2;
+FieldMax=2;
 
 
 %Phase Loop parameters
 p=1;
-pmax=201;
+pmax=101;
 Phase0Min=0*pi;
-Phase0Max=4*pi;
+Phase0Max=2*pi;
 
 
 %Pre Allocating memory to the arrays (should decrease runtime)
@@ -121,7 +121,7 @@ MinSCurrentNet=zeros(2,fmax);
 AlphaSS =(AlphaMax-AlphaMin)/(jmax-1);
 for j=1:jmax;
     
-    Alpha=AlphaMin+j*AlphaSS;
+    Alpha=AlphaMin+(j-1)*AlphaSS;
  
     %Field Contribution to the Phase 
     %Define the Field ForLoop setp size, then run the Field for ForLoop
@@ -148,8 +148,8 @@ for j=1:jmax;
             PhaseDrop1=Phase0(p)+PhaseFDen1;
             PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
 
-            SCurrent1=SCurDen1.*((1-Alpha)*sin(PhaseDrop1)+(02)*Jam*sin(PhaseDrop1*2));
-            SCurrent2=SCurDen2.*((1+Alpha)*sin(PhaseDrop2));
+            SCurrent1=SCurDen1.*(1-Alpha).*(sin(PhaseDrop1));
+            SCurrent2=SCurDen2.*(1+Alpha).*(sin(PhaseDrop2));
 
             SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
 
@@ -164,7 +164,6 @@ end
 hold on
 plot(Field,MaxSCurrentNet,'.')
 xlabel('Magnetic Field'); ylabel('Critical Current');
-
 
 hold on 
 plot(Field,MinSCurrentNet,'.')

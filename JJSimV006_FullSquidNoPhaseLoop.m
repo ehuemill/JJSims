@@ -49,8 +49,8 @@ close all;
     x2(:,1)=(1:xmax2);
 
 %Critical Current Magnitudes
-    JuncSCMag1=.5;
-    JuncSCMag2=.5;
+    JuncSCMag1=1;
+    JuncSCMag2=1;
 
 %Junction Area Determinination
     JuncWid1=.5;
@@ -69,20 +69,20 @@ LoopArea=LoopWid*LoopLen;
 
 %Field Parameters
 f=1;
-fmax=1003;
+fmax=1503;
 FieldMin=-3;
 FieldMax=3;
 
 
 %Stepping through a parameter to test
 j=1;
-jmax=3;
+jmax=2;
 AlphaMin=0;
 AlphaMax=.8;
 
 %Phase Loop parameters
 p=1;
-pmax=204;
+pmax=104;
 Phase0Min=-2*pi;
 Phase0Max=2*pi;
 

@@ -28,7 +28,7 @@ FluxinJuncMin=-3;
 FluxinJuncMax=3;
 
 SCurrentMag =1;
-SCurrentNoiseMag =.9;
+SCurrentNoiseMag =.01;
 
 
 %Phase Loop parameters

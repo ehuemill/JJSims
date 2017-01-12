@@ -28,10 +28,10 @@ close all;
 
 %% Defining the Parameters of the Simulaiton
 xmax1=201;
-x1(1,:)=(1:xmax);
+x1(1,:)=(1:xmax1);
 
 xmax2=201;
-x2(1,:)=(1:xmax);
+x2(1,:)=(1:xmax2);
 
 LoopArea=1;
 
