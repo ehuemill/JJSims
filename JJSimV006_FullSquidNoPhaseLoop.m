@@ -137,8 +137,6 @@ for j=1:jmax;
     FieldSS=(FieldMax-FieldMin)/(fmax-1);
     for f=1:fmax
 
-        disp(f);
-        disp(j);
         Field(f)=FieldMin+(f-1)*FieldSS;
 
 
@@ -164,7 +162,7 @@ for j=1:jmax;
             PhaseIntrinsic2(round(xmax2/2):end,:)=pi;
         
         %Calculating the Super Current 
-            SCurrent1=SCurDen1*ones(1,pmax).*(1-Alpha).*(sin(PhaseDrop1));
+            SCurrent1=SCurDen1*ones(1,pmax).*(1-Alpha).*(sin(PhaseDrop1+PhaseIntrinsic1));
             SCurrent2=SCurDen2*ones(1,pmax).*(1+Alpha).*sin(PhaseDrop2+PhaseIntrinsic2);
             
             SCurrentNet=sum(SCurrent1)+sum(SCurrent2);
