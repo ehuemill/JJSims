@@ -1,4 +1,4 @@
-%Explanation of base program
+
 
 %The program splits a single junciton up into xmax discrete sections.  Each
 %section has a supercurrent density, and a phase difference that is
@@ -12,102 +12,112 @@
 %lab.  
 
 
-%Version 003 was adapted to add a squid loop into the middle of the
-%junction by including an area that would add to the overall phase of the 
-%part of the junction that is past the location of the loop.  The loop size
-%can be varied, as can the relative critical currents between the two areas
-%
+%For Version 2, a geometrical loop was added so that the supercurrent vs
+%field plot could include different amounts of phase shift for a determined
+%portion of the junction.
 
 
-
-%% Clearing memory and input screen.
+%%
 
 clear;
 clc;
 close all;
-
 %% Defining the Parameters of the Simulaiton
-xmax1=201;
-x1(1,:)=(1:xmax);
 
-xmax2=201;
-x2(1,:)=(1:xmax);
+%Initial COnditions of the Simmulation
+    xmax=51;
+    x(1,:)=(1:xmax);
 
-LoopArea=1;
-
-
-%Field Parameters
-f=1;
-fmax=1001;
-FieldMin=-5;
-FieldMax=5;
+    SCurrentMag=0.001;
+    SCurNoiseMag=0.002;
 
 
-%Phase Loop parameters
-p=1;
-pmax=201;
-Phase1Min=0*pi;
-Phase1Max=4*pi;
+
+%Setting Loop Parameters
+
+    %Phase Loop parameters
+    p=1;
+    pmax=101;
+    Phase1Min=0*pi;
+    Phase1Max=2*pi;
 
 
+    %Flux Loop Parameters
+    f=1;
+    fmax=2001;
+    FluxinJuncMin=-15;
+    FluxinJuncMax=15;
+
+
+    %geometrical/Intrinsic Phase Loop Parameters
+    g=1;
+    gmax=3;
+    PhaseGMin=0;
+    PhaseGMax=pi;
+
+    
+%Calculating Parameters from Initial Conditions
+	SCurrentDensityNoise=SCurNoiseMag*(2*rand(1,xmax)-1);
+    SCurrentDensity=SCurrentMag*ones(1,xmax)+exp(SCurrentDensityNoise);
+    
+    
+    
+    
 %Pre Allocating memory to the arrays to decrease runtime
-Phase1=zeros(1,pmax);
-FluxinJunc1=zeros(1,fmax);
-FluxinJunc2=zeros(1,fmax);
-FluxinLoop=zeros(1,fmax);
+    Phase1=zeros(1,pmax);
+    PhaseG=zeros(1,xmax);
+    PhaseGShift=zeros(1,gmax);
+    FluxinJunc=zeros(1,fmax);
 
-SCurrentDensityNoise=(2*rand(1,xmax)-1);
-SCurrentDensity=ones(1,xmax)+.01*SCurrentDensityNoise;
-
-
-SCurrent=zeros(xmax,pmax,fmax);
-SCurrentNet=zeros(1,pmax);
-MaxSCurrentNet=zeros(1,fmax);
-MinSCurrentNet=zeros(1,fmax);
-%% Loops for running the simulation Meat of the Simulation
+    SCurrent=zeros(xmax,pmax,fmax);
+    SCurrentNet=zeros(1,pmax);
+    MaxSCurrentNet=zeros(fmax,gmax);
 
 
+%% Loops for running the simulation (Meat of the Simulation)
 
-%Field Contribution to the Phase 
+%Geometrical factor Loop
 %Define the loop setp size, then run the for loop
-FluxinJuncSS=(FluxinJuncMax-FluxinJuncMin)/(fmax-1);
-for f=1:fmax
-
-    FluxinJunc(f)=FluxinJuncMin+(f-1)*FluxinJuncSS;
-    PhaseF1=2*pi*x./xmax1*FluxinJunc1(f);
-    PhaseF1=2*pi*x./xmax2*FluxinJunc2(f);
+PhaseGSS=(PhaseGMax-PhaseGMin)/(gmax-1);
+for g=1:gmax
+    PhaseGShift(g)=PhaseGMin+(g-1)*PhaseGSS;
+    
+    %Defining the geometrical(intrinsic) phase shift in the junction
+    PhaseG(1,1:round(xmax/2))=0;
+    PhaseG(1,1:xmax-round(xmax/2))=PhaseGShift(g);
     
     
-    FluxinLoop(f)=FluxinJuncMin+(f-1)*FluxinJuncSS;
-    PhaseL=2*pi*LoopArea*FluxinLoop(f);
-    
-    %Phase1 Loop of externally set phase 
+    %Field Contribution to the Phase 
     %Define the loop setp size, then run the for loop
-    Phase1SS=(Phase1Max-Phase1Min)/(pmax-1);
-    for p=1:pmax
+    FluxinJuncSS=(FluxinJuncMax-FluxinJuncMin)/(fmax-1);
+    for f=1:fmax
 
-            Phase0(p)=Phase0Min+(p-1)*Phase0SS;
+        FluxinJunc(f)=FluxinJuncMin+(f-1)*FluxinJuncSS;
+        PhaseF=2*pi*x./xmax*FluxinJunc(f);
+        
+        %Phase1 Loop of externally set phase in 
+        %Define the loop setp size, then run the for loop
+        Phase1SSS=(Phase1Max-Phase1Min)/(pmax-1);
+        for p=1:pmax
 
-            PhaseDrop1=Phase0(p)+PhaseFDen1;
-            PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
+            Phase1(p)=Phase1Min+(p-1)*Phase1SSS;
 
-            SCurrent1=SCurDen1.*((1-Alpha)*sin(PhaseDrop1)+(02)*Jam*sin(PhaseDrop1*2));
-            SCurrent2=SCurDen2.*((1+Alpha)*sin(PhaseDrop2));
+            SCurrent=SCurrentDensity.*sin(PhaseF+Phase1(p)+PhaseG);
+            SCurrentNet(p)=sum(SCurrent)/xmax;
 
-            SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
 
+        end
+
+        MaxSCurrentNet(f,g)=max(SCurrentNet);
 
     end
 
-    MaxSCurrentNet(f)=max(SCurrentNet);
-    MinSCurrentNet(f)=min(SCurrentNet);
 end
 
-
 figure
-plot(FluxinJunc,MaxSCurrentNet,'r.')
-hold on 
-plot(FluxinJunc,MinSCurrentNet,'g.')
+plot(FluxinJunc,MaxSCurrentNet,'.')
+xlabel('Flux in Junction');ylabel('Net Supercurrent');
+
 
 
 

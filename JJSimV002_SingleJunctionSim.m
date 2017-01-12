@@ -30,25 +30,25 @@ x(1,:)=(1:xmax);
 
 
 
-%Phase Loop parameters
-p=1;
-pmax=101;
-Phase1Min=0*pi;
-Phase1Max=2*pi;
+    %Phase Loop parameters
+    p=1;
+    pmax=101;
+    Phase1Min=0*pi;
+    Phase1Max=2*pi;
 
 
-%Flux Loop Parameters
-f=1;
-fmax=1001;
-FluxinJuncMin=-3;
-FluxinJuncMax=3;
+    %Flux Loop Parameters
+    f=1;
+    fmax=1001;
+    FluxinJuncMin=-3;
+    FluxinJuncMax=3;
 
 
-%geometrical Phase Loop Parameters
-g=1;
-gmax=3;
-PhaseGMin=0;
-PhaseGMax=pi;
+    %geometrical Phase Loop Parameters
+    g=1;
+    gmax=3;
+    PhaseGMin=0;
+    PhaseGMax=pi;
 
 
 
