@@ -74,7 +74,9 @@ FluxinJuncSS=(FluxinJuncMax-FluxinJuncMin)/(fmax-1);
 for f=1:fmax
 
     FluxinJunc(f)=FluxinJuncMin+(f-1)*FluxinJuncSS;
-    PhaseF=2*pi*x./xmax*FluxinJunc(f);
+    PhaseF1=2*pi*x./xmax1*FluxinJunc1(f);
+    PhaseF1=2*pi*x./xmax2*FluxinJunc2(f);
+    
     
     FluxinLoop(f)=FluxinJuncMin+(f-1)*FluxinJuncSS;
     PhaseL=2*pi*LoopArea*FluxinLoop(f);
@@ -84,10 +86,15 @@ for f=1:fmax
     Phase1SS=(Phase1Max-Phase1Min)/(pmax-1);
     for p=1:pmax
 
-        Phase1(p)=Phase1Min+(p-1)*Phase1SS;
-        PhaseDrop=PhaseF+Phase1(p)+PhaseL;
-        SCurrent=SCurrentDensity.*(sin(PhaseDrop));
-        SCurrentNet(p)=sum(SCurrent)/xmax;
+            Phase0(p)=Phase0Min+(p-1)*Phase0SS;
+
+            PhaseDrop1=Phase0(p)+PhaseFDen1;
+            PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
+
+            SCurrent1=SCurDen1.*((1-Alpha)*sin(PhaseDrop1)+(02)*Jam*sin(PhaseDrop1*2));
+            SCurrent2=SCurDen2.*((1+Alpha)*sin(PhaseDrop2));
+
+            SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
 
 
     end

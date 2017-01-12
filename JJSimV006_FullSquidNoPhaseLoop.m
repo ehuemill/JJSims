@@ -42,59 +42,61 @@ close all;
 
 %% Defining the Parameters of the Simulaiton
 
-%Setting Junction 1 Parameters
-    xmax1=11;
-    xmax2=51;
-    x1(:,1)=(1:xmax1);
-    x2(:,1)=(1:xmax2);
+    %Dividing the Junctions up into discrete sections
+        xmax1=51;
+        xmax2=52;
+        x1(:,1)=(1:xmax1);
+        x2(:,1)=(1:xmax2);
 
-%Critical Current Magnitudes
-    JuncSCMag1=1;
-    JuncSCMag2=1;
+    %Critical Current Magnitudes
+        SCurrentMag1=1;
+        SCurrentMag2=1;
 
-%Junction Area Determinination
-    JuncWid1=.5;
-    JuncLen1=1;
+        SCurNoiseMag1=.01;
+        SCurNoiseMag2=.01;
+              
+    %Junction Area Dimensions
+        JuncWid1=1;
+        JuncLen1=1;
 
-    JuncWid2=.5;
-    JuncLen2=1;
+        JuncWid2=1;
+        JuncLen2=1;
+        
+    %Setting Squid Loop Parameers
+        LoopWid=2;
+        LoopLen=5;
+        
+%Setting up Loop Parameters
+        
+    %Phase Loop parameters
+        p=1;
+        pmax=203;
+        Phase0Min=0*pi;
+        Phase0Max=2*pi;
+            
+    %Field Parameters
+        f=1;
+        fmax=1004;
+        FieldMin=-2;
+        FieldMax=2;
+        
+    %Stepping through a parameter
+        j=1;
+        jmax=2;
+        AlphaMin=0;
+        AlphaMax=.8;
 
-JuncArea1=JuncWid1*JuncLen1;
-JuncArea2=JuncWid2*JuncLen2;
-
-%Setting Squid Loop Parameers
-LoopWid=10;
-LoopLen=10;
-LoopArea=LoopWid*LoopLen;
-
-%Field Parameters
-f=1;
-fmax=1006;
-FieldMin=-5;
-FieldMax=5;
-
-
-%Stepping through a parameter to test
-j=1;
-jmax=11;
-AlphaMin=0;
-AlphaMax=1;
-
-%Phase Loop parameters
-p=1;
-pmax=103;
-Phase0Min=0*pi;
-Phase0Max=2*pi;
-
-
-%Current Noise Parameters
-    SCurNoise1=(2*rand(1,xmax1)-1);
-    SCurNoise2=(2*rand(1,xmax2)-1);
 
 %Calculating Critical Current Densities
-    SCurDen1=transpose(ones(pmax,1)*(JuncSCMag1*ones(1,xmax1)/xmax1+.5*SCurNoise1/xmax1));
-    SCurDen2=transpose(ones(pmax,1)*(JuncSCMag2*ones(1,xmax2)/xmax2+.5*SCurNoise2/xmax2));
-
+    JuncArea1=JuncWid1*JuncLen1;
+    JuncArea2=JuncWid2*JuncLen2;
+    LoopArea=LoopWid*LoopLen;
+    
+    SCurNoise1=SCurNoiseMag1*(2*rand(xmax1,1)-1);
+    SCurNoise2=SCurNoiseMag2*(2*rand(xmax2,1)-1);
+ 
+    SCurDen1=ones(xmax1,1)*SCurrentMag1/xmax1+SCurNoise1/xmax1;
+    SCurDen2=ones(xmax2,1)*SCurrentMag2/xmax2+SCurNoise2/xmax2;
 
 %Pre Allocating memory to the arrays (should decrease runtime)
 Phase0=zeros(1,pmax);
@@ -149,34 +151,35 @@ for j=1:jmax;
 
         %Phase0 ForLoop of externally set phase 
         %Define the Phase0 setp size, then run the ForLoop
+            
             Phase0SS=(Phase0Max-Phase0Min)/(pmax-1);
             Phase0=(Phase0Min:Phase0SS:Phase0Max);
             PhaseNorm=Phase0/(2*pi);
             PhaseIntrinsic1=zeros(xmax1,pmax);
             PhaseIntrinsic2=zeros(xmax2,pmax);
-       %Calculating the local Phase Drop across each junction
-            PhaseDrop1=ones(xmax1,1)*Phase0+transpose(PhaseFDen1)*ones(1,pmax);
-            PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+transpose(PhaseFDen2)*ones(1,pmax);
+                        
+        %Calculating the local Phase Drop across each junction
+            PhaseDrop1=ones(xmax1,1)*Phase0+PhaseFDen1*ones(1,pmax);
+            PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+PhaseFDen2*ones(1,pmax);
             PhaseIntrinsic2(round(xmax2/2):end,:)=pi;
+        
         %Calculating the Super Current 
-            SCurrent1=SCurDen1.*(1-Alpha).*(sin(PhaseDrop1)+sin(PhaseDrop1*2));
-            SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2+PhaseIntrinsic2);
+            SCurrent1=SCurDen1*ones(1,pmax).*(1-Alpha).*(sin(PhaseDrop1));
+            SCurrent2=SCurDen2*ones(1,pmax).*(1+Alpha).*sin(PhaseDrop2+PhaseIntrinsic2);
             
             SCurrentNet=sum(SCurrent1)+sum(SCurrent2);
+        
             
+        %Recording the Maximum Super Current and its index in "p"
         [MaxSCurrentNet(j,f),IndexMaxSC(j,f)]=max(SCurrentNet);  
         [MinSCurrentNet(j,f),IndexMinSC(j,f)]=min(SCurrentNet);
-
+        %Recording the Phase0 of the Maximum Super Current
         Phase0MaxSC(j,f)=Phase0(IndexMaxSC(j,f));
         Phase0MinSC(j,f)=Phase0(IndexMinSC(j,f));
         
- 
-        
-    end
+     end
 
 end
-
-
 
 hold on; subplot(2,1,1); plot(Field,MaxSCurrentNet,'.')
 hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')

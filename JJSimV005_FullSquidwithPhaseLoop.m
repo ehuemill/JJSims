@@ -42,78 +42,81 @@ close all;
 
 %% Defining the Parameters of the Simulaiton
 
-%Setting Junction 1 Parameters
-    xmax1=101;
-    xmax2=101;
-    x1(1,:)=(1:xmax1);
-    x2(1,:)=(1:xmax2);
+%% Defining the Parameters of the Simulaiton
 
-%Critical Current Magnitudes
-    JuncSCMag1=.5;
-    JuncSCMag2=.5;
+    %Dividing the Junctions up into discrete sections
+        xmax1=51;
+        xmax2=51;
+        x1(1,:)=(1:xmax1);
+        x2(1,:)=(1:xmax2);
 
-%Junction Area Determinination
-    JuncWid1=.5;
-    JuncLen1=.5;
+    %Critical Current Magnitudes
+        SCurrentMag1=1;
+        SCurrentMag2=1;
 
-    JuncWid2=.5;
-    JuncLen2=.5;
+        SCurNoiseMag1=.01;
+        SCurNoiseMag2=.01;
+        
+    %Setting Squid Loop Parameers
+        LoopWid=1;
+        LoopLen=5;
+    %Junction Area Dimensions
+        JuncWid1=1;
+        JuncLen1=1;
+
+        JuncWid2=1;
+        JuncLen2=1;
 
 
-JuncArea1=JuncWid1*JuncLen1;
-JuncArea2=JuncWid2*JuncLen2;
+%Setting up Loop Parameters
 
-
-%Setting Squid Loop Parameers
-LoopWid=1;
-LoopLen=1;
-LoopArea=LoopWid*LoopLen;
-
-%Current Noise Parameters
-    SCurNoise1=(2*rand(1,xmax1)-1);
-    SCurNoise2=(2*rand(1,xmax2)-1);
+    %Phase Loop parameters
+        p=1;
+        pmax=101;
+        Phase0Min=0*pi;
+        Phase0Max=2*pi;
+            
+    %Field Parameters
+        f=1;
+        fmax=1001;
+        FieldMin=-2;
+        FieldMax=2;
+        
+    %Stepping through a parameter
+        j=1;
+        jmax=2;
+        AlphaMin=0;
+        AlphaMax=.8;
 
 %Calculating Critical Current Densities
-    SCurDen1=JuncSCMag1*ones(1,xmax1)/xmax1+.01*SCurNoise1/xmax1;
-    SCurDen2=JuncSCMag2*ones(1,xmax2)/xmax2+.01*SCurNoise2/xmax2;
-
-%Stepping through a parameter to test
-j=1;
-jmax=11;
-AlphaMin=0;
-AlphaMax=1;
-
-%Field Parameters
-f=1;
-fmax=1001;
-FieldMin=-10;
-FieldMax=10;
-
-
-%Phase Loop parameters
-p=1;
-pmax=201;
-Phase0Min=0*pi;
-Phase0Max=4*pi;
-
-
+    JuncArea1=JuncWid1*JuncLen1;
+    JuncArea2=JuncWid2*JuncLen2;
+    LoopArea=LoopWid*LoopLen;
+    
+    SCurNoise1=SCurNoiseMag1*(2*rand(1,xmax1)-1);
+    SCurNoise2=SCurNoiseMag2*(2*rand(1,xmax2)-1);
+ 
+    SCurDen1=SCurrentMag1*ones(1,xmax1)/xmax1+SCurNoise1/xmax1;
+    SCurDen2=SCurrentMag2*ones(1,xmax2)/xmax2+SCurNoise2/xmax2;
+ 
 %Pre Allocating memory to the arrays (should decrease runtime)
-Phase0=zeros(1,pmax);
-Field=zeros(1,fmax);
-FluxinJunc1=zeros(1,fmax);
-FluxinJunc2=zeros(1,fmax);
-FluxinLoop=zeros(1,fmax);
+    Phase0=zeros(1,pmax);
+    Field=zeros(1,fmax);
+    FluxinJunc1=zeros(1,fmax);
+    FluxinJunc2=zeros(1,fmax);
+    FluxinLoop=zeros(1,fmax);
 
-PhaseFDen1=zeros(1,fmax);
-PhaseFDen2=zeros(1,fmax);
-PhaseFL=zeros(1,fmax);
+    PhaseFDen1=zeros(1,fmax);
+    PhaseFDen2=zeros(1,fmax);
+    PhaseFL=zeros(1,fmax);
 
-SCurrent1=zeros(xmax1,pmax,fmax);
-SCurrent2=zeros(xmax2,pmax,fmax);
-SCurrentNet=zeros(1,pmax);
+    SCurrent1=zeros(xmax1,pmax,fmax);
+    SCurrent2=zeros(xmax2,pmax,fmax);
+    SCurrentNet=zeros(1,pmax);
 
-MaxSCurrentNet=zeros(jmax,fmax);
-MinSCurrentNet=zeros(jmax,fmax);
+    MaxSCurrentNet=zeros(jmax,fmax);
+    MinSCurrentNet=zeros(jmax,fmax);
+
 %% Loops for running the simulation Meat of the Simulation
 
 
@@ -121,7 +124,7 @@ MinSCurrentNet=zeros(jmax,fmax);
 AlphaSS =(AlphaMax-AlphaMin)/(jmax-1);
 for j=1:jmax;
     
-    Alpha=AlphaMin+(j-1)*AlphaSS
+    Alpha=AlphaMin+(j-1)*AlphaSS;
  
     %Field Contribution to the Phase 
     %Define the Field ForLoop setp size, then run the Field for ForLoop
@@ -149,14 +152,14 @@ for j=1:jmax;
             PhaseDrop1=Phase0(p)+PhaseFDen1;
             PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
 
-            SCurrent1=SCurDen1.*(1-Alpha).*(.6*sin(PhaseDrop1)+.4*sin(PhaseDrop1*2));
-            SCurrent2=SCurDen2.*(1+Alpha).*sin(PhaseDrop2);
+            SCurrent1=SCurDen1.*(1-Alpha).*(sin(PhaseDrop1)+sin(PhaseDrop1*2));
+            SCurrent2=SCurDen2.*(1+Alpha).*2.*sin(PhaseDrop2);
 
             SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
 
 
         end
-        MaxSCurrentNet(j,f)=max(SCurrentNet);
+        MaxSCurrentNet(j,f) =max(SCurrentNet);
         MinSCurrentNet(j,f)=min(SCurrentNet);
     end
 
@@ -167,8 +170,8 @@ plot(Field,MaxSCurrentNet,'.')
 xlabel('Magnetic Field'); ylabel('Critical Current');
 
 
-% hold on 
-% plot(Field,MinSCurrentNet,'.')
+hold on 
+plot(Field,MinSCurrentNet,'.')
 
 
 

@@ -17,39 +17,42 @@ clc;
 close all;
 %% Defining the Parameters of the Simulaiton
 
-%Defining number of discrete steps in the junction
-xmax=101;
-x(1,:)=(1:xmax);
+    %Dividing the junction up into discrete sections
+    xmax=51;
+    x(1,:)=(1:xmax);
 
-%Flux Loop Parameters
-f=1;
-fmax=601;
-FluxinJuncMin=-3;
-FluxinJuncMax=3;
-
-SCurrentMag =1;
-SCurrentNoiseMag =.5;
+    %Defining Super Current parameters
+    SCurrentMag =1;
+    SCurrentNoiseMag =.1;
 
 
-%Phase Loop parameters
-p=1;
-pmax=101;
-Phase1Min=-0*pi;
-Phase1Max=2.0*pi;
+%Setting up Loop steps and ranges
 
+    %Phase Loop parameters
+    p=1;
+    pmax=101;
+    Phase1Min=-0*pi;
+    Phase1Max=2.0*pi;
+
+    %Flux Loop Parameters
+    f=1;
+    fmax=1001;
+    FluxinJuncMin=-3;
+    FluxinJuncMax=3;
+
+%Calculating Parameters from Initial Conditions
+
+    SCurrentDensity=(SCurrentMag*ones(1,xmax)+SCurrentNoiseMag*(2*rand(1,xmax)-1))/xmax;
 
 %Pre Allocating memory to the arrays to decrease runtime
-Phase1=zeros(1,pmax);
-FluxinJunc=zeros(1,fmax);
-IndexMax=zeros(1,fmax);
-Phase1MaxSC=zeros(1,fmax);
+    Phase1=zeros(1,pmax);
+    FluxinJunc=zeros(1,fmax);
+    IndexMax=zeros(1,fmax);
+    Phase1MaxSC=zeros(1,fmax);
 
-
-SCurrentDensity=(SCurrentMag*ones(1,xmax)+SCurrentNoiseMag*(2*rand(1,xmax)-1))/xmax;
-
-SCurrent=zeros(xmax,pmax,fmax);
-SCurrentNet=zeros(1,pmax);
-MaxSCurrentNet=zeros(1,fmax);
+    SCurrent=zeros(xmax,pmax,fmax);
+    SCurrentNet=zeros(1,pmax);
+    MaxSCurrentNet=zeros(1,fmax);
 
 %% Loops for running the simulation Meat of the Simulation
 
