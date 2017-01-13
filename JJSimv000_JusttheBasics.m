@@ -3,13 +3,15 @@
 %The program splits a single junciton up into xmax discrete sections.  Each
 %section has a supercurrent density, and a phase difference that is
 %contributed to by the field (PhaseF), and an arbitrary phase set at x=1
-%called Phase1.  For each value of field and Phase1 the supercurrent at
-%each point is calculated and the net supercurrent (sum along the junction)
-%is calcualted to find the supercurrent carried at that phase and that
-%field.  To find the maximum supercurrent for a given field, the max of
-%that vector is taken, and can be plotted against the magnetic field.  This
-%is the exact measurment of the critical current vs field that we do in the
-%lab.  
+%called Phase1. V000 is just the phase loop to demonstrate that the amount
+%of SCurrentNet that can be carried by the junction depends on that Phase1
+%value.  By changing the fluxinJunc parameter you can see how the pattern
+%is shifted.  Later programs (v001 and beyond) all take the maximum
+%SCurrentNet value and record that as the critical current of the junction
+%at that field value.  
+
+%This is the exact measurment of the critical current vs field that we 
+%do in the lab.  
 
 %% Clearing memory and input screen.
 clear;
@@ -19,13 +21,15 @@ close all;
 
     %Dividing the junction up into discrete sections
     xmax=101;
-    x(1,:)=(1:xmax);
+    x(:,1)=(1:xmax);
 
     %Defining Super Current parameters
     SCurrentMag =1;
     SCurrentNoiseMag =.1;
 
-
+    %Flux Encolsed in the Junction
+    FluxinJunc=.5;
+    
 %Setting up Loop steps and ranges
 
     %Phase Loop parameters
@@ -34,12 +38,9 @@ close all;
     Phase1Min=-2*pi;
     Phase1Max=2.0*pi;
 
-    %Flux Encolsed in the Junction
-    FluxinJunc=.5;
-
 %Calculating Parameters from Initial Conditions
 
-    SCurrentDensity=(SCurrentMag*ones(1,xmax)/xmax+SCurrentNoiseMag/xmax*(2*rand(1,xmax)-1));
+    SCurrentDensity=(SCurrentMag*ones(xmax,1)/xmax+SCurrentNoiseMag/xmax*(2*rand(xmax,1)-1));
 
 %Pre Allocating memory to the arrays to decrease runtime
     Phase1=zeros(1,pmax);
@@ -58,7 +59,6 @@ close all;
 %Phase1 Loop of externally set phase at edge of JJ 
     %Define the loop step size, then run the for loop
     Phase1SS=(Phase1Max-Phase1Min)/(pmax-1);
-    
     for p=1:pmax
         Phase1(p)=Phase1Min+(p-1)*Phase1SS;
         
@@ -67,15 +67,13 @@ close all;
         SCurrent=SCurrentDensity.*sin(PhaseDrop);
         SCurrentNet(p)=sum(SCurrent);
     end
-     
-    [MaxSCurrentNet,IndexMax]=max(SCurrentNet);
-    Phase1MaxSC=Phase1(IndexMax);
-        
-
+    
+    
+    
+%Plot the SCurrentNet vs the Phase1 value for the Junction    
 figure
-
 plot(Phase1/pi,SCurrentNet,'.')
-xlabel ('Phase1 Value/pi');ylabel('Total Super Current Across Junction');
+xlabel ('Phase1 Value/pi');ylabel('Net Super Current Across Junction');
 
 
 
