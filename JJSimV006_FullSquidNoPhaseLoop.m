@@ -63,7 +63,7 @@ close all;
         JuncLen2=1;
         
     %Setting Squid Loop Parameers
-        LoopWid=2;
+        LoopWid=5;
         LoopLen=5;
         
 %Setting up Loop Parameters
@@ -71,20 +71,20 @@ close all;
     %Phase Loop parameters
         p=1;
         pmax=203;
-        Phase0Min=0*pi;
-        Phase0Max=2*pi;
+        Phase0Min=-pi;
+        Phase0Max=3*pi;
             
     %Field Parameters
         f=1;
-        fmax=1004;
-        FieldMin=-2;
-        FieldMax=2;
+        fmax=5004;
+        FieldMin=-5;
+        FieldMax=5;
         
     %Stepping through a parameter
         j=1;
-        jmax=2;
-        AlphaMin=0;
-        AlphaMax=.8;
+        jmax=7;
+        AlphaMin=-.5;
+        AlphaMax=.5;
 
 
 %Calculating Critical Current Densities
@@ -153,17 +153,15 @@ for j=1:jmax;
             Phase0SS=(Phase0Max-Phase0Min)/(pmax-1);
             Phase0=(Phase0Min:Phase0SS:Phase0Max);
             PhaseNorm=Phase0/(2*pi);
-            PhaseIntrinsic1=zeros(xmax1,pmax);
-            PhaseIntrinsic2=zeros(xmax2,pmax);
                         
         %Calculating the local Phase Drop across each junction
             PhaseDrop1=ones(xmax1,1)*Phase0+PhaseFDen1*ones(1,pmax);
             PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+PhaseFDen2*ones(1,pmax);
-            PhaseIntrinsic2(round(xmax2/2):end,:)=pi;
+         
         
         %Calculating the Super Current 
-            SCurrent1=SCurDen1*ones(1,pmax).*(1-Alpha).*(sin(PhaseDrop1+PhaseIntrinsic1));
-            SCurrent2=SCurDen2*ones(1,pmax).*(1+Alpha).*sin(PhaseDrop2+PhaseIntrinsic2);
+            SCurrent1=SCurDen1*ones(1,pmax).*((1-Alpha).*sin(PhaseDrop1)+(Alpha.*sin(PhaseDrop1/2)));
+            SCurrent2=SCurDen2*ones(1,pmax).*sin(PhaseDrop2);
             
             SCurrentNet=sum(SCurrent1)+sum(SCurrent2);
         
@@ -178,9 +176,13 @@ for j=1:jmax;
      end
 
 end
+hold on; 
+subplot(2,1,1);
+plot(Field,MaxSCurrentNet)
 
-hold on; subplot(2,1,1); plot(Field,MaxSCurrentNet,'.')
-hold on; subplot(2,1,1); plot(Field,MinSCurrentNet,'.')
+% hold on; 
+% subplot(2,1,1); 
+% plot(Field,MinSCurrentNet)
 xlabel('Magnetic Field'); ylabel('Critical Current');
 
 
