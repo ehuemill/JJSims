@@ -63,7 +63,7 @@ close all;
         JuncLen2=1;
         
     %Setting Squid Loop Parameers
-        LoopWid=2;
+        LoopWid=1;
         LoopLen=5;
         
 %Setting up Loop Parameters
@@ -77,14 +77,14 @@ close all;
     %Field Parameters
         f=1;
         fmax=1004;
-        FieldMin=-2;
-        FieldMax=2;
+        FieldMin=-4;
+        FieldMax=4;
         
     %Stepping through a parameter
         j=1;
-        jmax=2;
+        jmax=11;
         AlphaMin=0;
-        AlphaMax=.8;
+        AlphaMax=1;
 
 
 %Calculating Critical Current Densities
@@ -159,10 +159,12 @@ for j=1:jmax;
         %Calculating the local Phase Drop across each junction
             PhaseDrop1=ones(xmax1,1)*Phase0+PhaseFDen1*ones(1,pmax);
             PhaseDrop2=ones(xmax2,1)*Phase0+PhaseFL.*ones(xmax2,pmax)+PhaseFDen2*ones(1,pmax);
+            
+            PhaseIntrinsic1(round(xmax1/2):end,:)=0;
             PhaseIntrinsic2(round(xmax2/2):end,:)=pi;
         
         %Calculating the Super Current 
-            SCurrent1=SCurDen1*ones(1,pmax).*(1-Alpha).*(sin(PhaseDrop1+PhaseIntrinsic1));
+            SCurrent1=SCurDen1*ones(1,pmax).*(1-Alpha).*sin(PhaseDrop1+PhaseIntrinsic1);
             SCurrent2=SCurDen2*ones(1,pmax).*(1+Alpha).*sin(PhaseDrop2+PhaseIntrinsic2);
             
             SCurrentNet=sum(SCurrent1)+sum(SCurrent2);
