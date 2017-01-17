@@ -19,7 +19,7 @@ close all;
 
     %Dividing the junction up into discrete sections
     xmax=51;
-    x(1,:)=(1:xmax);
+    x(1:xmax,1)=(1:xmax);
 
     %Defining Super Current parameters
     SCurrentMag =1;
@@ -42,7 +42,7 @@ close all;
 
 %Calculating Parameters from Initial Conditions
 
-    SCurrentDensity=(SCurrentMag*ones(1,xmax)+SCurrentNoiseMag*(2*rand(1,xmax)-1))/xmax;
+    SCurrentDensity=(SCurrentMag*ones(xmax,1)+SCurrentNoiseMag*(2*rand(xmax,1)-1))/xmax;
 
 %Pre Allocating memory to the arrays to decrease runtime
     Phase1=zeros(1,pmax);

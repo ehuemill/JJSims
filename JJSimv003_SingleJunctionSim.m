@@ -26,10 +26,10 @@ close all;
 
 %Initial COnditions of the Simmulation
     xmax=51;
-    x(1,:)=(1:xmax);
+    x(:,1)=(1:xmax);
 
-    SCurrentMag=0.001;
-    SCurNoiseMag=0.002;
+    SCurrentMag=1;
+    SCurNoiseMag=0.001;
 
 
 
@@ -45,27 +45,26 @@ close all;
     %Flux Loop Parameters
     f=1;
     fmax=2001;
-    FluxinJuncMin=-15;
-    FluxinJuncMax=15;
+    FluxinJuncMin=-5;
+    FluxinJuncMax=5;
 
 
     %geometrical/Intrinsic Phase Loop Parameters
     g=1;
-    gmax=3;
-    PhaseGMin=0;
+    gmax=4;
+    PhaseGMin=-.5*pi;
     PhaseGMax=pi;
 
     
 %Calculating Parameters from Initial Conditions
-	SCurrentDensityNoise=SCurNoiseMag*(2*rand(1,xmax)-1);
-    SCurrentDensity=SCurrentMag*ones(1,xmax)+exp(SCurrentDensityNoise);
+	SCurrentDensityNoise=SCurNoiseMag*(2*rand(xmax,1)-1);
+    SCurrentDensity=SCurrentMag*ones(xmax,1)+exp(SCurrentDensityNoise);
     
     
-    
-    
+       
 %Pre Allocating memory to the arrays to decrease runtime
     Phase1=zeros(1,pmax);
-    PhaseG=zeros(1,xmax);
+    PhaseG=zeros(xmax,1);
     PhaseGShift=zeros(1,gmax);
     FluxinJunc=zeros(1,fmax);
 
@@ -83,8 +82,8 @@ for g=1:gmax
     PhaseGShift(g)=PhaseGMin+(g-1)*PhaseGSS;
     
     %Defining the geometrical(intrinsic) phase shift in the junction
-    PhaseG(1,1:round(xmax/2))=0;
-    PhaseG(1,1:xmax-round(xmax/2))=PhaseGShift(g);
+    PhaseG(1:round(xmax/2),1)=0;
+    PhaseG(1:xmax-round(xmax/2),1)=PhaseGShift(g);
     
     
     %Field Contribution to the Phase 
