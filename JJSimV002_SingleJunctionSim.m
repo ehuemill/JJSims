@@ -26,10 +26,10 @@ close all;
 
 %Dividing the junction up into discrete sections
 xmax=51;
-x(1,:)=(1:xmax);
+x(:,1)=(1:xmax);
 
-
-
+SCurrentDensityMag=1;
+SCurDensityNoiseMag=.001;
     %Phase Loop parameters
     p=1;
     pmax=101;
@@ -40,28 +40,28 @@ x(1,:)=(1:xmax);
     %Flux Loop Parameters
     f=1;
     fmax=1001;
-    FluxinJuncMin=-3;
-    FluxinJuncMax=3;
+    FluxinJuncMin=-5;
+    FluxinJuncMax=5;
 
 
     %geometrical Phase Loop Parameters
     g=1;
-    gmax=3;
-    PhaseGMin=0;
+    gmax=4;
+    PhaseGMin=-.5*pi;
     PhaseGMax=pi;
 
 
 
 %Pre Allocating memory to the arrays to decrease runtime
 Phase1=zeros(1,pmax);
-PhaseG=zeros(1,xmax);
+PhaseG=zeros(xmax,1);
 PhaseGShift=zeros(1,gmax);
 FluxinJunc=zeros(1,fmax);
 
 SCurrent=zeros(xmax,pmax,fmax);
 SCurrentNet=zeros(1,pmax);
 MaxSCurrentNet=zeros(fmax,gmax);
-
+MinSCurrentNet=zeros(fmax,gmax);
 
 %% Loops for running the simulation (Meat of the Simulation)
 
@@ -72,11 +72,11 @@ for g=1:gmax
     PhaseGShift(g)=PhaseGMin+(g-1)*PhaseGSS;
     
     %Defining the geometrical(intrinsic) phase shift in the junction
-    PhaseG(1,1:round(xmax/2))=0;
-    PhaseG(1,1:xmax-round(xmax/2))=PhaseGShift(g);
+    PhaseG(1:round(xmax/2),1)=0;
+    PhaseG(1:xmax-round(xmax/2),1)=PhaseGShift(g);
     
-    SCurrentDensityNoise=(2*rand(1,xmax)-1);
-    SCurrentDensity=ones(1,xmax)+.01*(SCurrentDensityNoise);
+    SCurrentDensityNoise=SCurDensityNoiseMag*(2*rand(xmax,1)-1);
+    SCurrentDensity=(SCurrentDensityMag*ones(xmax,1))/xmax+(SCurrentDensityNoise)/xmax;
 
     %Field Contribution to the Phase 
     %Define the loop setp size, then run the for loop
@@ -94,13 +94,13 @@ for g=1:gmax
             Phase1(p)=Phase1Min+(p-1)*Phase1SSS;
 
             SCurrent=SCurrentDensity.*sin(PhaseF+Phase1(p)+PhaseG);
-            SCurrentNet(p)=sum(SCurrent)/xmax;
+            SCurrentNet(p)=sum(SCurrent);
 
 
         end
 
         MaxSCurrentNet(f,g)=max(SCurrentNet);
-
+        MinSCurrentNet(f,g)=min(SCurrentNet);
     end
 
 end
@@ -109,9 +109,8 @@ figure
 plot(FluxinJunc,MaxSCurrentNet,'.')
 xlabel('Flux in Junction');ylabel('Net Supercurrent');
 
-
-
-
+hold on
+plot(FluxinJunc,MinSCurrentNet,'.')
 
     
 
