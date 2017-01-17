@@ -58,8 +58,8 @@ close all;
         SCurNoiseMag2=.01;
         
     %Setting Squid Loop Parameers
-        LoopWid=1;
-        LoopLen=5;
+        LoopWid=5;
+        LoopLen=2;
     %Junction Area Dimensions
         JuncWid1=1;
         JuncLen1=1;
@@ -74,17 +74,17 @@ close all;
         p=1;
         pmax=101;
         Phase0Min=0*pi;
-        Phase0Max=2*pi;
+        Phase0Max=4*pi;
             
     %Field Parameters
         f=1;
         fmax=1001;
-        FieldMin=-2;
-        FieldMax=2;
+        FieldMin=-.8;
+        FieldMax=.8;
         
     %Stepping through a parameter
         j=1;
-        jmax=2;
+        jmax=3;
         AlphaMin=0;
         AlphaMax=.8;
 
@@ -152,8 +152,8 @@ for j=1:jmax;
             PhaseDrop1=Phase0(p)+PhaseFDen1;
             PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
 
-            SCurrent1=SCurDen1.*(1-Alpha).*(sin(PhaseDrop1)+sin(PhaseDrop1*2));
-            SCurrent2=SCurDen2.*(1+Alpha).*2.*sin(PhaseDrop2);
+            SCurrent1=SCurDen1.*(1-Alpha).*(.5*sin(PhaseDrop1)+.5*sin(PhaseDrop1*2));
+            SCurrent2=SCurDen2.*(1+Alpha).*(sin(PhaseDrop2));
 
             SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
 
