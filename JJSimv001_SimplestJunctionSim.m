@@ -23,7 +23,7 @@ close all;
 
     %Defining Super Current parameters
     SCurrentMag =1;
-    SCurrentNoiseMag =.1;
+    SCurrentNoiseMag =.0;
 
 
 %Setting up Loop steps and ranges
@@ -89,7 +89,7 @@ subplot(2,1,1); plot(FluxinJunc,MaxSCurrentNet,'.')
 ylabel('Critical Current');
 
 subplot(2,1,2); plot(FluxinJunc,Phase1MaxSC/pi,'.')
-xlabel('Flux');ylabel('Phase1 of Ic/pi');
+xlabel('Flux');ylabel('Phase1 of Ic/pi');axis([FluxinJuncMin,FluxinJuncMax,Phase1Min,2])
 
 
 
