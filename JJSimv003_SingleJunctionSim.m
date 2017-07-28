@@ -25,11 +25,11 @@ close all;
 %% Defining the Parameters of the Simulaiton
 
 %Initial COnditions of the Simmulation
-    xmax=51;
+    xmax=601;
     x(:,1)=(1:xmax);
 
     SCurrentMag=1;
-    SCurNoiseMag=0.001;
+    SCurNoiseMag=0.1;
 
 
 
@@ -37,22 +37,22 @@ close all;
 
     %Phase Loop parameters
     p=1;
-    pmax=101;
-    Phase1Min=0*pi;
+    pmax=201;
+    Phase1Min=-2*pi;
     Phase1Max=2*pi;
 
 
     %Flux Loop Parameters
     f=1;
-    fmax=2001;
+    fmax=1001;
     FluxinJuncMin=-5;
     FluxinJuncMax=5;
 
 
     %geometrical/Intrinsic Phase Loop Parameters
     g=1;
-    gmax=4;
-    PhaseGMin=-.5*pi;
+    gmax=2;
+    PhaseGMin=-0*pi;
     PhaseGMax=pi;
 
     

@@ -28,7 +28,7 @@ close all;
     SCurrentNoiseMag =.1;
 
     %Flux Encolsed in the Junction
-    FluxinJunc=.5;
+    FluxinJunc=0;
     
 %Setting up Loop steps and ranges
 
@@ -39,7 +39,6 @@ close all;
     Phase1Max=2.0*pi;
 
 %Calculating Parameters from Initial Conditions
-
     SCurrentDensity=(SCurrentMag*ones(xmax,1)/xmax+SCurrentNoiseMag/xmax*(2*rand(xmax,1)-1));
 
 %Pre Allocating memory to the arrays to decrease runtime
@@ -57,7 +56,7 @@ close all;
     
     
 %Phase1 Loop of externally set phase at edge of JJ 
-    %Define the loop step size, then run the for loop
+    %Define the loop step size(SS), then run the for loop
     Phase1SS=(Phase1Max-Phase1Min)/(pmax-1);
     for p=1:pmax
         Phase1(p)=Phase1Min+(p-1)*Phase1SS;
