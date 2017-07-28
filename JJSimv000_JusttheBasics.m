@@ -14,65 +14,72 @@
 %do in the lab.  
 
 %% Clearing memory and input screen.
-clear;
-clc;
-close all;
+clear; clc; close all;
+
 %% Defining the Parameters of the Simulaiton
 
     %Dividing the junction up into discrete sections
-    xmax=101;
-    x(:,1)=(1:xmax);
+        xmin = -25;
+        xmax =  50;
+        xsize=xmax-xmin+1;
+        x(1:xsize,1) = (1:xsize)-1+xmin;
 
     %Defining Super Current parameters
-    SCurrentMag =1;
-    SCurrentNoiseMag =.1;
+        SCurrentMag = 1;
+        SCurrentNoiseMag =.1;
 
     %Flux Encolsed in the Junction
-    FluxinJunc=0;
+        FluxinJunc=0;
     
 %Setting up Loop steps and ranges
-
     %Phase Loop parameters
-    p=1;
-    pmax=202;
-    Phase1Min=-2*pi;
-    Phase1Max=2.0*pi;
+        p=1;
+        pmax=202;
+        Phase1Min=-2*pi;
+        Phase1Max=2.0*pi;
 
 %Calculating Parameters from Initial Conditions
-    SCurrentDensity=(SCurrentMag*ones(xmax,1)/xmax+SCurrentNoiseMag/xmax*(2*rand(xmax,1)-1));
+    SCurrentNoise = (SCurrentNoiseMag/(xsize)*(2*rand(xsize,1)-1));
+    SCurrentDensity=(SCurrentMag/xsize*ones(xsize,1)+SCurrentNoise);
 
 %Pre Allocating memory to the arrays to decrease runtime
-    Phase1=zeros(1,pmax);
+        Phase1=zeros(1,pmax);
 
-    SCurrent=zeros(xmax,pmax);
-    SCurrentNet=zeros(1,pmax);
+        SCurrent=zeros(xsize,pmax);
+        SCurrentNet=zeros(1,pmax);
 
 
 %% Loops for running the simulation Meat of the Simulation
 
-
 %Field Contribution to the Phase 
-    PhaseF=2*pi*FluxinJunc*x./xmax;
+    PhaseF=2*pi*FluxinJunc*x./(xsize);
+        
+%Phase1 Loop of externally set phase at edge of the JJ 
+    %Define the loop step size(SS)
+        Phase1SS=(Phase1Max-Phase1Min)/(pmax-1); 
     
-    
-%Phase1 Loop of externally set phase at edge of JJ 
-    %Define the loop step size(SS), then run the for loop
-    Phase1SS=(Phase1Max-Phase1Min)/(pmax-1);
+    %Run the for loop
     for p=1:pmax
+        %Calculating the vector that is the Phase contribution from Phase1
         Phase1(p)=Phase1Min+(p-1)*Phase1SS;
         
+        %Calculating the total phase drop across the junction
         PhaseDrop=Phase1(p)+PhaseF;
         
+        %Calculating the vector that is the Super Current (SCurrent)across
+        %the junction at each position.  
         SCurrent=SCurrentDensity.*sin(PhaseDrop);
+        
+        %Numerically integrating the Super Current (SCurrent) along the
+        %junction to find the total super current carried at each Phase1.
         SCurrentNet(p)=sum(SCurrent);
+        
     end
-    
-    
-    
+   
 %Plot the SCurrentNet vs the Phase1 value for the Junction    
-figure
-plot(Phase1/pi,SCurrentNet,'.')
+figure; plot(Phase1/pi,SCurrentNet,'.');
 xlabel ('Phase1 Value/pi');ylabel('Net Super Current Across Junction');
+title('Jucntion Supercurrent vs Arbitrary Phase(Phase1) Value');
 
 
 

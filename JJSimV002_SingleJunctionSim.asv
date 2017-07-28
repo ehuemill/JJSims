@@ -44,8 +44,10 @@ clear; clc; close all;
     %geometrical Phase Loop Parameters
         g=1;
         gmax=4;
-        PhaseGMin=pi/2;
-        PhaseGMax=-pi;
+        PhaseGMin=-.5*pi;
+        PhaseGMax=pi;
+
+
 
 %Pre Allocating memory to the arrays to decrease runtime
     Phase1=zeros(1,pmax);
@@ -67,8 +69,8 @@ for g=1:gmax
     PhaseGShift(g)=PhaseGMin+(g-1)*PhaseGSS;
     
     %Defining the geometrical(intrinsic) phase shift in the junction
-    PhaseG(1:abs(xmin)+1,1)=0;
-    PhaseG(abs(xmin)+1:xsize,1) = PhaseGShift(g);
+    PhaseG(1:abs(xmin+1,1)=0;
+    PhaseG(xmin+1:xsize,1)=PhaseGShift(g);
     
      %Calculating supercurrent and supercurrent noise
         SCurrentNoise = (SCurrentNoiseMag/xsize*(2*rand(xsize,1)-1));
@@ -91,6 +93,8 @@ for g=1:gmax
 
                 SCurrent=SCurrentDensity.*sin(PhaseF+Phase1(p)+PhaseG);
                 SCurrentNet(p)=sum(SCurrent);
+
+
             end
 
             MaxSCurrentNet(f,g)=max(SCurrentNet);

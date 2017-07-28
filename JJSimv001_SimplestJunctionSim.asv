@@ -18,30 +18,28 @@ clear; clc; close all;
 
 %% Defining the Parameters of the Simulaiton
     %Dividing the junction up into discrete sections
-        xmin = 0;
-        xmax =  50;
-        xsize=xmax-xmin+1;
-        x(1:xsize,1) = (1:xsize)-1+xmin;
+    xmax=51;
+    x(1:xmax,1)=(1:xmax);
 
     %Defining Super Current parameters
-        SCurrentMag =1;
-        SCurrentNoiseMag =.1;
+    SCurrentMag =1;
+    SCurrentNoiseMag =.1;
 
 %Setting up Loop steps and ranges
     %Phase Loop parameters
         p=1;
-        pmax=501;
+        pmax=101;
         Phase1Min=-0*pi;
         Phase1Max=2.0*pi;
     %Flux Loop Parameters
         f=1;
-        fmax=501;
+        fmax=1001;
         FluxinJuncMin=-3;
         FluxinJuncMax=3;
 
 %Calculating Parameters from Initial Conditions
-    SCurrentNoise = (SCurrentNoiseMag/xsize*(2*rand(xsize,1)-1));
-    SCurrentDensity=(SCurrentMag/xsize*ones(xsize,1)+SCurrentNoise);
+    SCurrentNoise = (SCurrentNoiseMag/xmax*(2*rand(xmax,1)-1));
+    SCurrentDensity=(SCurrentMag/xmax*ones(xmax,1)+SCurrentNoise);
     
 %Pre Allocating memory for the arrays to decrease runtime
     Phase1=zeros(1,pmax);
@@ -49,7 +47,7 @@ clear; clc; close all;
     IndexMax=zeros(1,fmax);
     Phase1MaxSC=zeros(1,fmax);
 
-    SCurrent=zeros(xsize,pmax,fmax);
+    SCurrent=zeros(xmax,pmax,fmax);
     SCurrentNet=zeros(1,pmax);
     MaxSCurrentNet=zeros(1,fmax);
 
@@ -61,7 +59,7 @@ clear; clc; close all;
     FluxinJuncSS=(FluxinJuncMax-FluxinJuncMin)/(fmax-1);
     for f=1:fmax
         FluxinJunc(f)=FluxinJuncMin+(f-1)*FluxinJuncSS;
-        PhaseF=2*pi*FluxinJunc(f)*x./xsize;
+        PhaseF=2*pi*FluxinJunc(f)*x./xmax;
 
         %Phase1 Loop of externally set phase at edge of JJ 
             %Define the loop step size(SS)
@@ -97,7 +95,7 @@ clear; clc; close all;
 figure; subplot(2,1,1); plot(FluxinJunc,MaxSCurrentNet,'.')
 ylabel('Critical Current');
 
-%Ploting the Phase1 value that maximizes the critical current
+%Ploting the Phase1 value that maxim
 subplot(2,1,2); plot(FluxinJunc,Phase1MaxSC/pi,'.')
 xlabel('Flux');ylabel('Phase1 of Ic/pi');
 
