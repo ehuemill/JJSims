@@ -63,7 +63,7 @@ clear; clc; close all;
 %Geometrical factor Loop
 %Define the loop setp size, then run the for loop
 PhaseGSS=(PhaseGMax-PhaseGMin)/(gmax-1);
-for g=1:gmax
+for g=1:gmaxf
     PhaseGShift(g)=PhaseGMin+(g-1)*PhaseGSS;
     
     %Defining the geometrical(intrinsic) phase shift in the junction

@@ -18,8 +18,8 @@ clear; clc; close all;
 
 %% Defining the Parameters of the Simulaiton
     %Dividing the junction up into discrete sections
-        xmin = 0;
-        xmax =  50;
+        xmin = -20;
+        xmax =  20;
         xsize=xmax-xmin+1;
         x(1:xsize,1) = (1:xsize)-1+xmin;
 
@@ -31,17 +31,18 @@ clear; clc; close all;
     %Phase Loop parameters
         p=1;
         pmax=501;
-        Phase1Min=-0*pi;
-        Phase1Max=2.0*pi;
+        Phase1Min = -0.0 * pi;
+        Phase1Max =  2.0 * pi;
+        %Phase1 is the phase at x=0.  
     %Flux Loop Parameters
         f=1;
         fmax=501;
-        FluxinJuncMin=-3;
-        FluxinJuncMax=3;
+        FluxinJuncMin= -3.5;
+        FluxinJuncMax=  3.5 ;
 
 %Calculating Parameters from Initial Conditions
-    SCurrentNoise = (SCurrentNoiseMag/xsize*(2*rand(xsize,1)-1));
-    SCurrentDensity=(SCurrentMag/xsize*ones(xsize,1)+SCurrentNoise);
+    SCurrentNoise   = (SCurrentNoiseMag/xsize*(2*rand(xsize,1)-1));
+    SCurrentDensity = (SCurrentMag/xsize*ones(xsize,1)+SCurrentNoise);
     
 %Pre Allocating memory for the arrays to decrease runtime
     Phase1=zeros(1,pmax);
