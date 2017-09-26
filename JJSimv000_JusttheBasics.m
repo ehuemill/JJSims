@@ -19,8 +19,8 @@ clear; clc; close all;
 %% Defining the Parameters of the Simulaiton
 
     %Dividing the junction up into discrete sections
-        xmin = -25;
-        xmax =  50;
+        xmin = -12.5;
+        xmax =  12.5;
         xsize=xmax-xmin+1;
         x(1:xsize,1) = (1:xsize)-1+xmin;
 
@@ -29,12 +29,12 @@ clear; clc; close all;
         SCurrentNoiseMag =.1;
 
     %Flux Encolsed in the Junction
-        FluxinJunc=0;
+        FluxinJunc=.25;
     
 %Setting up Loop steps and ranges
     %Phase Loop parameters
         p=1;
-        pmax=202;
+        pmax=101;
         Phase1Min=-2*pi;
         Phase1Max=2.0*pi;
 

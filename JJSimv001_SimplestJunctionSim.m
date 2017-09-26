@@ -25,14 +25,14 @@ clear; clc; close all;
 
     %Defining Super Current parameters
         SCurrentMag =1;
-        SCurrentNoiseMag =.1;
+        SCurrentNoiseMag =.01;
 
 %Setting up Loop steps and ranges
     %Phase Loop parameters
         p=1;
         pmax=501;
         Phase1Min = -0.0 * pi;
-        Phase1Max =  2.0 * pi;
+        Phase1Max =  4.0 * pi;
         %Phase1 is the phase at x=0.  
     %Flux Loop Parameters
         f=1;
@@ -77,7 +77,7 @@ clear; clc; close all;
 
                 %Calculating the vector that is the Super Current (SCurrent)
                 %across the junction at each position.  
-                SCurrent=SCurrentDensity.*sin(PhaseDrop);
+                SCurrent=SCurrentDensity.*(.8.*sin(PhaseDrop)+0.2.*sin(PhaseDrop/2));
                
                 %Numerically integrating the Super Current (SCurrent) along 
                 %the junction to find the total super current carried at 

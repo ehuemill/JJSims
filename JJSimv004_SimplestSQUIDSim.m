@@ -50,7 +50,7 @@ close all;
         x2(1,:)=(1:xmax2);
 
     %Critical Current Magnitudes
-        SCurrentMag1=1;
+        SCurrentMag1=2;
         SCurrentMag2=1;
 
         SCurNoiseMag1=.01;
