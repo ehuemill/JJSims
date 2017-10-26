@@ -42,7 +42,6 @@ clc;
 close all;
 
 %% Defining the Parameters of the Simulaiton
-
     %Dividing the Junctions up into discrete sections
         xmax1=51;
         xmax2=51;
@@ -50,7 +49,7 @@ close all;
         x2(1,:)=(1:xmax2);
 
     %Critical Current Magnitudes
-        SCurrentMag1=2;
+        SCurrentMag1=1;
         SCurrentMag2=1;
 
         SCurNoiseMag1=.01;
@@ -58,7 +57,7 @@ close all;
         
     %Setting Squid Loop Parameers
         LoopWid=1;
-        LoopLen=5;
+        LoopLen=3;
     %Junction Area Dimensions
         JuncWid1=1;
         JuncLen1=1;
@@ -70,13 +69,13 @@ close all;
 
     %Phase Loop parameters
         p=1;
-        pmax=101;
+        pmax=201;
         Phase0Min=0*pi;
-        Phase0Max=2*pi;
+        Phase0Max=4*pi;
             
     %Field Parameters
         f=1;
-        fmax=1001;
+        fmax=501;
         FieldMin=-2;
         FieldMax=2;
         
@@ -138,7 +137,8 @@ close all;
 
             SCurrent1=SCurDen1.*sin(PhaseDrop1);
             SCurrent2=SCurDen2.*sin(PhaseDrop2);
-
+            
+            %Record the total SC of the squid
             SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
 
 

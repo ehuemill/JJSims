@@ -51,7 +51,7 @@ close all;
         x2(1,:)=(1:xmax2);
 
     %Critical Current Magnitudes
-        SCurrentMag1=1;
+        SCurrentMag1=.1;
         SCurrentMag2=1;
 
         SCurNoiseMag1=.01;
@@ -59,34 +59,34 @@ close all;
         
     %Setting Squid Loop Parameers
         LoopWid=1;
-        LoopLen=5;
+        LoopLen=1;
     %Junction Area Dimensions
-        JuncWid1=1;
-        JuncLen1=1;
+        JuncWid1=.1;
+        JuncLen1=.1;
 
-        JuncWid2=1;
-        JuncLen2=1;
+        JuncWid2=.1;
+        JuncLen2=.11;
 
 
 %Setting up Loop Parameters
 
     %Phase Loop parameters
         p=1;
-        pmax=101;
-        Phase0Min=0*pi;
-        Phase0Max=2*pi;
+        pmax=201;
+        Phase0Min=-0*pi;
+        Phase0Max=4*pi;
             
     %Field Parameters
         f=1;
-        fmax=1001;
+        fmax=501;
         FieldMin=-2;
         FieldMax=2;
         
     %Stepping through a parameter
         j=1;
         jmax=2;
-        AlphaMin=0;
-        AlphaMax=.8;
+        AlphaMin=-0;
+        AlphaMax=0.3;
 
 %Calculating Critical Current Densities
     JuncArea1=JuncWid1*JuncLen1;
@@ -96,8 +96,8 @@ close all;
     SCurNoise1=SCurNoiseMag1*(2*rand(1,xmax1)-1);
     SCurNoise2=SCurNoiseMag2*(2*rand(1,xmax2)-1);
  
-    SCurDen1=SCurrentMag1*ones(1,xmax1)/xmax1+SCurNoise1/xmax1;
-    SCurDen2=SCurrentMag2*ones(1,xmax2)/xmax2+SCurNoise2/xmax2;
+    SCurDen1=SCurrentMag1*(ones(1,xmax1)/xmax1+SCurNoise1/xmax1);
+    SCurDen2=SCurrentMag2*(ones(1,xmax2)/xmax2+SCurNoise2/xmax2);
  
 %Pre Allocating memory to the arrays (should decrease runtime)
     Phase0=zeros(1,pmax);
@@ -113,10 +113,22 @@ close all;
     SCurrent1=zeros(xmax1,pmax,fmax);
     SCurrent2=zeros(xmax2,pmax,fmax);
     SCurrentNet=zeros(1,pmax);
-
+    
+    PhaseWinding1=zeros(1,pmax);
+    PhaseWinding2=zeros(1,pmax);
+    
+%Pre Allocating memory for things that will be plotted
     MaxSCurrentNet=zeros(jmax,fmax);
     MinSCurrentNet=zeros(jmax,fmax);
-
+    
+    MaxPhaseIndex=zeros(jmax,fmax);
+    MinPhaseIndex=zeros(jmax,fmax);
+    
+    MaxPhaseWinding1=zeros(jmax,fmax);
+    MinPhaseWinding1=zeros(jmax,fmax);
+    
+    MaxPhaseWinding2=zeros(jmax,fmax);
+    MinPhaseWinding2=zeros(jmax,fmax);
 %% Loops for running the simulation Meat of the Simulation
 
 
@@ -149,29 +161,52 @@ for j=1:jmax;
 
             Phase0(p)=Phase0Min+(p-1)*Phase0SS;
 
-            PhaseDrop1=Phase0(p)+PhaseFDen1;
-            PhaseDrop2=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen2;
+            PhaseDrop1=Phase0(p)+PhaseF1+PhaseFL+PhaseFDen1;
+            PhaseDrop2=Phase0(p)+PhaseFDen2;
 
-            SCurrent1=SCurDen1.*(1-Alpha).*(sin(PhaseDrop1)+sin(PhaseDrop1*2));
-            SCurrent2=SCurDen2.*(1+Alpha).*2.*sin(PhaseDrop2);
-
+            SCurrent1=SCurDen1.*((1-Alpha).*sin(PhaseDrop1)+(Alpha).*sin(PhaseDrop1./2));
+            SCurrent2=SCurDen2.*sin(PhaseDrop2);
+            
+            %Record the total SC of the squid
             SCurrentNet(p)=sum(SCurrent1)+sum(SCurrent2);
-
+            
+            %Record the Phase in the middle of each junction as
+            %PhaseWinding#
+            PhaseWinding1(p)=PhaseDrop1(round(xmax1/2));
+            PhaseWinding2(p)=PhaseDrop2(round(xmax2/2));
 
         end
-        MaxSCurrentNet(j,f) =max(SCurrentNet);
-        MinSCurrentNet(j,f)=min(SCurrentNet);
+        
+        %Finds the maximum/minimum super current and the index for that current
+        [MaxSCurrentNet(j,f), MaxPhaseIndex(j,f)] = max(SCurrentNet);
+        [MinSCurrentNet(j,f), MinPhaseIndex(j,f)] = min(SCurrentNet);
+        
+        %Finds the Phase across each junction at the Max Super Current
+        MaxPhaseWinding1(j,f) = PhaseWinding1(MaxPhaseIndex(j,f));
+        MaxPhaseWinding2(j,f) = PhaseWinding2(MaxPhaseIndex(j,f));
+        
+        %Finds the Phase across each junction at the Min Super Current
+        MinPhaseWinding1(j,f) = PhaseWinding1(MaxPhaseIndex(j,f));
+        MinPhaseWinding2(j,f) = PhaseWinding2(MaxPhaseIndex(j,f));
     end
 
 end
 
 hold on
+subplot(3,1,1)
 plot(Field,MaxSCurrentNet,'.')
-xlabel('Magnetic Field'); ylabel('Critical Current');
+ylabel('Critical Current');
 
+subplot(3,1,2)
+plot(Field,MaxPhaseWinding1/pi,'.')
+ylabel('Phase1 (pi)');
 
-hold on 
-plot(Field,MinSCurrentNet,'.')
+subplot(3,1,3)
+plot(Field,MaxPhaseWinding2/pi,'.')
+xlabel('Magnetic Field'); ylabel('Phase2 (pi)');
+
+%hold on 
+%plot(Field,MinSCurrentNet,'.')
 
 
 
